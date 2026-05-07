@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ROHO 과학 탐험대 — Program 04: 입체 홀로그램 장치 시연</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
+    @page { size: 60cm 180cm; margin: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #1a1a2e; }
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background: #1a1a2e;
+      font-family: 'Nanum Gothic', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    }
+
+    /* ══════════════════════════════════════
+       BANNER CANVAS
+    ══════════════════════════════════════ */
+    .banner {
+      width: 60cm;
+      height: 180cm;
+      overflow: hidden;
+      position: relative;
+      background: #ffffff;
+    }
+
+    /* Circuit grid overlay */
+    .bg-grid {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px, transparent 88px,
+          rgba(0,200,255,0.022) 88px, rgba(0,200,255,0.022) 89px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px, transparent 88px,
+          rgba(0,200,255,0.022) 88px, rgba(0,200,255,0.022) 89px
+        );
+    }
+
+    /* Hologram glow blobs */
+    .bb1 { width:55cm; height:55cm; top:-18cm; left:-15cm; background:radial-gradient(circle, rgba(0,200,255,0.09) 0%, transparent 65%); }
+    .bb2 { width:50cm; height:50cm; top:65cm;  right:-20cm; background:radial-gradient(circle, rgba(130,80,255,0.08) 0%, transparent 65%); }
+    .bb3 { width:55cm; height:55cm; top:125cm; left:-5cm;  background:radial-gradient(circle, rgba(0,180,255,0.09) 0%, transparent 65%); }
+    .bb1, .bb2, .bb3 {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Stars / sparkles */
+    .st { position:absolute; border-radius:50%; background:#00e5ff; }
+
+    /* ══════════════════════════════════════
+       HOLOGRAM TOP STRIPE
+    ══════════════════════════════════════ */
+    .holo-stripe {
+      position: relative; z-index: 10;
+      height: 1.1cm;
+      background: linear-gradient(90deg,
+        #00bcd4 0%, #7c4dff 25%, #00e5ff 50%, #651fff 75%, #00bcd4 100%
+      );
+    }
+
+    /* ══════════════════════════════════════
+       HEADER BAND
+    ══════════════════════════════════════ */
+    .header-band {
+      position: relative; z-index: 10;
+      padding: 1.3cm 3cm;
+      background: linear-gradient(90deg, #e3f8ff 0%, #eef4ff 60%, #f0eaff 100%);
+      border-bottom: 0.12cm solid rgba(0,180,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .co-badge { display:flex; align-items:center; gap:0.8cm; }
+    .co-icon {
+      width:3.6cm; height:3.6cm; border-radius:0.55cm; flex-shrink:0;
+      background: linear-gradient(135deg,#00bcd4,#651fff);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2cm; box-shadow: 0 0.2cm 0.8cm rgba(0,180,255,0.5);
+    }
+    .co-label { font-size:0.85cm; color:#0077aa; letter-spacing:0.15cm; font-weight:700; }
+    .co-name  { font-size:1.5cm; font-weight:800; color:#111; letter-spacing:0.04cm; }
+    .prog-tag {
+      background: linear-gradient(135deg,#00bcd4,#7c4dff);
+      color:#fff; font-size:1cm; font-weight:800;
+      padding:0.38cm 1cm; border-radius:2cm;
+      box-shadow:0 0.12cm 0.5cm rgba(0,180,255,0.45);
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      position: relative; z-index: 5;
+      padding: 2.2cm 3cm 1.8cm;
+      text-align: center;
+    }
+    .hero-emojis {
+      font-size: 3.2cm; line-height:1; margin-bottom:0.7cm;
+      filter: drop-shadow(0 0.2cm 0.9cm rgba(0,220,255,0.7));
+    }
+    .prog-num {
+      display:inline-block;
+      background:rgba(0,188,212,0.12); border:0.08cm solid rgba(0,150,200,0.5);
+      color:#0077aa; font-size:1cm; font-weight:800; letter-spacing:0.25cm;
+      padding:0.22cm 1.2cm; border-radius:2cm; margin-bottom:0.7cm;
+    }
+    .main-title {
+      font-size: 3.8cm; font-weight:800; color:#111; line-height:1.05;
+      text-shadow: none;
+      margin-bottom: 0.5cm;
+    }
+    .title-line {
+      width:22cm; height:0.22cm; margin:0 auto 0.8cm;
+      background: linear-gradient(90deg, transparent, #00bcd4, #7c4dff, #00e5ff, transparent);
+      border-radius:1cm;
+    }
+    .subtitle {
+      font-size:1.4cm; color:#0077aa; font-weight:700; letter-spacing:0.03cm;
+    }
+
+    /* ══════════════════════════════════════
+       FUN FACTS STRIP
+    ══════════════════════════════════════ */
+    .funfacts {
+      position: relative; z-index:5;
+      margin: 1cm 2.5cm 0;
+      padding: 1.2cm 1.5cm;
+      background: rgba(0,220,255,0.03);
+      border: 0.08cm solid rgba(0,188,212,0.2);
+      border-radius: 0.8cm;
+    }
+    .ff-heading {
+      text-align:center; font-size:1cm; font-weight:800; letter-spacing:0.18cm;
+      color:#0077aa; margin-bottom:1cm;
+    }
+    .ff-cards { display:flex; gap:1cm; }
+    .ff-card {
+      flex:1; border-radius:0.65cm; padding:1cm 1.1cm;
+      display:flex; flex-direction:column; align-items:center; gap:0.45cm;
+      text-align:center;
+    }
+    .ff-card.c1 { background:linear-gradient(135deg,rgba(0,220,255,0.12),rgba(0,150,220,0.08)); border:0.07cm solid rgba(0,200,255,0.35); }
+    .ff-card.c2 { background:linear-gradient(135deg,rgba(124,77,255,0.12),rgba(80,0,220,0.08)); border:0.07cm solid rgba(120,80,255,0.35); }
+    .ff-card.c3 { background:linear-gradient(135deg,rgba(0,200,220,0.12),rgba(80,0,200,0.08)); border:0.07cm solid rgba(60,160,255,0.35); }
+    .ff-icon  { font-size:2cm; line-height:1; }
+    .ff-title { font-size:1.05cm; font-weight:800; }
+    .ff-body  { font-size:1cm; font-weight:400; color:#333; line-height:1.65; word-break:keep-all; }
+    .ff-card.c1 .ff-title { color:#0077aa; }
+    .ff-card.c2 .ff-title { color:#5e00cc; }
+    .ff-card.c3 .ff-title { color:#005f8a; }
+
+    /* ══════════════════════════════════════
+       DIVIDER
+    ══════════════════════════════════════ */
+    .div { display:flex; align-items:center; gap:0.45cm; padding:0 3cm; margin:1.6cm 0; }
+    .div .ln { flex:1; height:0.05cm; }
+    .div .dk { width:0.38cm; height:0.38cm; border-radius:50%; }
+
+    .div-cyan  .ln { background:linear-gradient(90deg,transparent,rgba(0,188,212,0.6),transparent); }
+    .div-cyan  .dk { background:#00bcd4; box-shadow:0 0 0.3cm #00bcd4; }
+    .div-blue  .ln { background:linear-gradient(90deg,transparent,rgba(33,150,243,0.6),transparent); }
+    .div-blue  .dk { background:#2196f3; box-shadow:0 0 0.3cm #2196f3; }
+    .div-green .ln { background:linear-gradient(90deg,transparent,rgba(0,230,180,0.6),transparent); }
+    .div-green .dk { background:#00e5b0; box-shadow:0 0 0.3cm #00e5b0; }
+    .div-purple .ln { background:linear-gradient(90deg,transparent,rgba(124,77,255,0.6),transparent); }
+    .div-purple .dk { background:#7c4dff; box-shadow:0 0 0.3cm #7c4dff; }
+
+    /* ══════════════════════════════════════
+       CONTENT BOXES
+    ══════════════════════════════════════ */
+    .cbox { position:relative; z-index:5; margin:0 2.5cm; border-radius:0.8cm; padding:1.6cm 2.2cm; }
+    .sci  {
+      background: linear-gradient(140deg,rgba(220,245,255,0.9),rgba(200,230,255,0.9));
+      border:0.09cm solid rgba(0,150,220,0.3);
+      box-shadow:0 0.3cm 1.4cm rgba(0,0,0,0.07);
+    }
+    .act  {
+      background: linear-gradient(140deg,rgba(240,230,255,0.9),rgba(228,215,255,0.9));
+      border:0.09cm solid rgba(100,0,220,0.25);
+      box-shadow:0 0.3cm 1.4cm rgba(0,0,0,0.07);
+    }
+    .sh {
+      display:flex; align-items:center; gap:0.75cm;
+      padding-bottom:0.9cm; margin-bottom:1.1cm;
+    }
+    .sci .sh { border-bottom:0.06cm solid rgba(0,150,220,0.2); }
+    .act .sh { border-bottom:0.06cm solid rgba(100,0,220,0.2); }
+    .sh-icon { font-size:2.3cm; flex-shrink:0; line-height:1; }
+    .sh-lbl  { font-size:0.9cm; font-weight:800; letter-spacing:0.2cm; margin-bottom:0.18cm; }
+    .sh-ttl  { font-size:1.7cm; font-weight:800; color:#111; }
+    .sci .sh-lbl { color:#1565c0; }
+    .act .sh-lbl { color:#5e00cc; }
+
+    .btext { font-size:1.1cm; line-height:1.85; color:#222; font-weight:700; word-break:keep-all; }
+    .btext em { color:#006699; font-style:normal; }
+
+    /* concept callouts */
+    .cbox-inner {
+      display:flex; align-items:flex-start; gap:0.55cm;
+      background:rgba(0,0,0,0.04); border-radius:0.5cm;
+      padding:0.85cm 1.1cm; margin-top:0.9cm;
+    }
+    .ci-em { font-size:1.35cm; flex-shrink:0; line-height:1.5; }
+    .ci-tx { font-size:1.05cm; line-height:1.7; color:#333; word-break:keep-all; }
+    .ci-tx strong { font-weight:800; color:#111; }
+
+    /* SVG diagram */
+    .diagram-wrap {
+      margin-top:1.1cm;
+      background:rgba(255,255,255,0.65);
+      border:0.07cm solid rgba(0,150,220,0.25);
+      border-radius:0.55cm;
+      padding:0.9cm 0.6cm 0.7cm;
+    }
+    .diagram-label {
+      text-align:center; font-size:0.95cm; font-weight:800;
+      color:#1565c0; letter-spacing:0.12cm; margin-bottom:0.6cm;
+    }
+    .diagram-wrap svg { width:100%; height:auto; display:block; }
+
+    /* activity steps */
+    .steps { display:flex; flex-direction:column; gap:1.3cm; align-items:center; }
+    .step  { display:flex; align-items:center; gap:0.8cm; width:80%; }
+    .step-num {
+      min-width:1.6cm; height:1.6cm; border-radius:50%; flex-shrink:0;
+      background: rgba(100,0,220,0.1);
+      border: 0.06cm solid rgba(100,0,220,0.35);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1cm; font-weight:800; color:#5e00cc;
+    }
+    .step-tx { font-size:1.1cm; line-height:1.75; color:#222; font-weight:700; word-break:keep-all; }
+    .step-tx em { color:#5e00cc; font-style:normal; }
+
+    /* tip box */
+    .safety {
+      margin-top:1cm;
+      background:rgba(0,180,255,0.08);
+      border:0.07cm solid rgba(0,180,255,0.35);
+      border-radius:0.5cm;
+      padding:0.75cm 1.1cm;
+      display:flex; align-items:center; gap:0.7cm;
+    }
+    .safety-icon { font-size:1.5cm; flex-shrink:0; }
+    .safety-tx { font-size:1cm; line-height:1.6; color:#004d77; font-weight:700; word-break:keep-all; }
+    .safety-tx strong { color:#0077aa; }
+
+    /* ══════════════════════════════════════
+       REAL-WORLD STRIP
+    ══════════════════════════════════════ */
+    .nature-strip {
+      position:relative; z-index:5;
+      margin:0 2.5cm;
+      display:flex; gap:0.9cm;
+    }
+    .nat-card {
+      flex:1; display:flex; flex-direction:column; align-items:center;
+      gap:0.5cm; text-align:center;
+      background:rgba(240,250,255,0.6);
+      border:0.07cm solid rgba(0,180,255,0.25);
+      border-radius:0.65cm; padding:1.6cm 0.5cm;
+    }
+    .nat-circle {
+      width:4cm; height:4cm; border-radius:50%;
+      background:linear-gradient(135deg,rgba(0,200,255,0.18),rgba(100,0,255,0.10));
+      border:0.1cm solid rgba(0,200,255,0.45);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.2cm; line-height:1;
+      box-shadow:0 0 0.8cm rgba(0,180,255,0.2);
+    }
+    .nat-title { font-size:1.05cm; font-weight:800; color:#0077aa; }
+    .nat-desc  { font-size:0.95cm; color:#444; line-height:1.55; }
+
+    /* ══════════════════════════════════════
+       CHALLENGE SECTION
+    ══════════════════════════════════════ */
+    .chall {
+      position:relative; z-index:5;
+      margin:0 2.5cm;
+    }
+    .chall-head {
+      text-align:center; font-size:1.2cm; font-weight:800;
+      color:#7c4dff; letter-spacing:0.1cm; margin-bottom:0.9cm;
+    }
+    .chall-cards { display:flex; gap:1cm; }
+    .chall-card {
+      flex:1; border-radius:0.65cm;
+      background:linear-gradient(140deg,rgba(220,240,255,0.9),rgba(205,228,255,0.9));
+      border:0.08cm solid rgba(0,120,210,0.3);
+      padding:1.8cm 1cm;
+      display:flex; flex-direction:column; align-items:center; gap:0.5cm;
+      text-align:center;
+    }
+    .chall-stars { font-size:1.3cm; }
+    .chall-level { font-size:1cm; font-weight:800; color:#1565c0; }
+    .chall-tx    { font-size:1.05cm; font-weight:700; color:#222; line-height:1.55; word-break:keep-all; }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .footer {
+      position:relative; z-index:5;
+      padding:2cm 3cm 3cm;
+      text-align:center;
+    }
+    .foot-line {
+      height:0.08cm;
+      background:linear-gradient(90deg,transparent,#00bcd4,#7c4dff,transparent);
+      margin-bottom:0.8cm;
+    }
+    .foot-tag  { font-size:1.1cm; font-weight:800; color:#0077aa; margin-bottom:0.6cm; letter-spacing:0.02cm; }
+    .foot-emojis { font-size:1.5cm; letter-spacing:0.35cm; }
+
+    /* ══════════════════════════════════════
+       BOTTOM HOLO STRIPE
+    ══════════════════════════════════════ */
+    .holo-stripe-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1.1cm;
+      background: linear-gradient(90deg,
+        #651fff 0%, #00e5ff 25%, #7c4dff 50%, #00bcd4 75%, #651fff 100%
+      );
+      z-index: 20;
+    }
+  </style>
+</head>
+<body>
+<div class="banner">
+
+  <!-- BACKGROUNDS -->
+  <div class="bg-grid"></div>
+  <div class="bb1"></div>
+  <div class="bb2"></div>
+  <div class="bb3"></div>
+
+  <!-- Stars / sparkles (cyan/blue/purple) -->
+  <div class="st" style="width:0.18cm;height:0.18cm;top:5cm; left:5cm;  opacity:.7; background:#00e5ff;"></div>
+  <div class="st" style="width:0.14cm;height:0.14cm;top:8cm; left:45cm; opacity:.6; background:#7c4dff;"></div>
+  <div class="st" style="width:0.22cm;height:0.22cm;top:12cm;left:22cm; opacity:.5; background:#00bcd4;"></div>
+  <div class="st" style="width:0.15cm;height:0.15cm;top:20cm;left:10cm; opacity:.6; background:#651fff;"></div>
+  <div class="st" style="width:0.18cm;height:0.18cm;top:30cm;left:52cm; opacity:.5; background:#00e5ff;"></div>
+  <div class="st" style="width:0.12cm;height:0.12cm;top:45cm;left:8cm;  opacity:.7; background:#7c4dff;"></div>
+  <div class="st" style="width:0.20cm;height:0.20cm;top:55cm;left:35cm; opacity:.4; background:#00bcd4;"></div>
+  <div class="st" style="width:0.14cm;height:0.14cm;top:70cm;left:18cm; opacity:.6; background:#00e5ff;"></div>
+  <div class="st" style="width:0.18cm;height:0.18cm;top:85cm;left:50cm; opacity:.5; background:#7c4dff;"></div>
+  <div class="st" style="width:0.15cm;height:0.15cm;top:100cm;left:4cm; opacity:.6; background:#00bcd4;"></div>
+  <div class="st" style="width:0.22cm;height:0.22cm;top:115cm;left:28cm;opacity:.4; background:#00e5ff;"></div>
+  <div class="st" style="width:0.14cm;height:0.14cm;top:130cm;left:55cm;opacity:.5; background:#651fff;"></div>
+  <div class="st" style="width:0.18cm;height:0.18cm;top:145cm;left:12cm;opacity:.6; background:#00bcd4;"></div>
+  <div class="st" style="width:0.12cm;height:0.12cm;top:160cm;left:40cm;opacity:.5; background:#7c4dff;"></div>
+
+  <!-- TOP HOLO STRIPE -->
+  <div class="holo-stripe"></div>
+
+  <!-- ════════ HEADER ════════ -->
+  <div class="header-band">
+    <div class="co-badge">
+      <div class="co-icon">🔮</div>
+      <div>
+        <div class="co-label" style="letter-spacing:0.35cm;">S c i e n c e &nbsp; P r o g r a m</div>
+        <div class="co-name">ROHO 학교로 찾아가는 과학 체험</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ HERO ════════ -->
+  <div class="hero">
+    <div class="hero-emojis">🌐 ✨ 💎</div>
+    <div class="prog-num">PROGRAM 04</div>
+    <div class="main-title">입체 홀로그램 장치 시연</div>
+    <div class="title-line"></div>
+    <div class="subtitle">빛의 마법 — 공중에 떠오르는 3D 영상의 비밀!</div>
+  </div>
+
+  <!-- ════════ FUN FACTS ════════ -->
+  <div class="funfacts">
+    <div class="ff-heading">✨ 깜짝 과학 사실! ✨</div>
+    <div class="ff-cards">
+      <div class="ff-card c1">
+        <div class="ff-icon">💡</div>
+        <div class="ff-title">빛의 속도!</div>
+        <div class="ff-body">빛은 1초에 <strong style="color:#0077aa">30만 km</strong>를 달려요. 지구를 무려 <strong style="color:#0077aa">7바퀴 반</strong>이나 도는 거리예요!</div>
+      </div>
+      <div class="ff-card c2">
+        <div class="ff-icon">👻</div>
+        <div class="ff-title">페퍼의 유령!</div>
+        <div class="ff-body"><strong style="color:#5e00cc">1862년</strong> 영국 과학자 페퍼와 더크스가 개발한 빛 반사 착시 기술이 오늘날 피라미드 홀로그램의 기초가 됐어요!</div>
+      </div>
+      <div class="ff-card c3">
+        <div class="ff-icon">🎤</div>
+        <div class="ff-title">홀로그램 공연!</div>
+        <div class="ff-body">세상을 떠난 가수들이 홀로그램 기술로 <strong style="color:#005f8a">무대 위에 다시 등장</strong>해요. 관객은 진짜처럼 느끼죠!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ DIVIDER: CYAN ════════ -->
+  <div class="div div-cyan">
+    <div class="ln"></div>
+    <div class="dk"></div><div class="dk"></div><div class="dk"></div>
+    <div class="ln"></div>
+  </div>
+
+  <!-- ════════ SCIENCE BOX ════════ -->
+  <div class="cbox sci">
+    <div class="sh">
+      <div class="sh-icon">🔭</div>
+      <div>
+        <div class="sh-lbl">과학 원리 탐구</div>
+        <div class="sh-ttl">홀로그램은 어떻게 작동할까?</div>
+      </div>
+    </div>
+
+    <div class="btext">
+      피라미드 홀로그램은 <em>빛의 반사</em>를 이용해요! 화면에 표시된 영상이 <em>기울어진 투명한 면</em>에 반사되면, 우리 눈에는 공중에 떠 있는 것처럼 보여요. 이것이 바로 <em>페퍼의 유령(Pepper's Ghost)</em> 원리예요. 스마트폰 화면의 빛이 피라미드 <em>각 면에 개별적으로 반사</em>되어, 신기하게도 <em>공중에 떠 있는 3D 영상</em>처럼 느껴져요!
+    </div>
+
+    <div class="cbox-inner">
+      <div class="ci-em">👁️</div>
+      <div class="ci-tx"><strong>페퍼의 유령 (Pepper's Ghost):</strong> 투명한 유리나 플라스틱이 거울처럼 빛을 반사해요. 빛이 비스듬히 반사되면 마치 허공에 물체가 떠 있는 것처럼 보이는 착시가 생겨요.</div>
+    </div>
+
+    <div class="cbox-inner">
+      <div class="ci-em">🔺</div>
+      <div class="ci-tx"><strong>빛의 반사 (光의 反射):</strong> 스마트폰 화면에서 나온 빛이 피라미드의 기울어진 면에 부딪혀 방향을 바꿔요. 4면에서 반사된 빛이 피라미드 중앙에서 합쳐져 공중에 떠 있는 3D 이미지를 만들어요!</div>
+    </div>
+
+    <!-- SVG: Pyramid Hologram Diagram -->
+    <div class="diagram-wrap">
+      <div class="diagram-label">🔮 피라미드 홀로그램 작동 원리</div>
+      <svg viewBox="0 0 900 430" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Background tint -->
+        <rect x="0" y="0" width="900" height="430" rx="10" fill="rgba(230,245,255,0.5)"/>
+
+        <!-- ══ "투명 피라미드" label centered at very top ══ -->
+        <text x="450" y="32" font-size="24" fill="#0077aa" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">◆ 투명 피라미드 (개방형 밑면)</text>
+
+        <!-- ══ INVERTED PYRAMID — base open at top, apex points DOWN to phone ══ -->
+        <polygon points="278,50  382,50  450,295"
+                 fill="rgba(0,200,255,0.13)" stroke="#00bcd4" stroke-width="2.5"/>
+        <polygon points="518,50  622,50  450,295"
+                 fill="rgba(0,200,255,0.13)" stroke="#00bcd4" stroke-width="2.5"/>
+        <polygon points="382,50  518,50  450,295"
+                 fill="rgba(0,220,255,0.20)" stroke="#0099cc" stroke-width="2.5"/>
+        <line x1="278" y1="50" x2="622" y2="50" stroke="#00bcd4" stroke-width="2" stroke-dasharray="8,5"/>
+        <circle cx="450" cy="295" r="7" fill="#00bcd4" opacity="0.9"/>
+
+        <!-- ══ HOLOGRAM GLOW ══ -->
+        <ellipse cx="450" cy="162" rx="38" ry="23"
+                 fill="rgba(0,220,255,0.35)" stroke="#00e5ff" stroke-width="1.8"/>
+        <text x="450" y="171" font-size="26" font-family="sans-serif" text-anchor="middle">⭐</text>
+        <text x="450" y="200" font-size="22" fill="#005580" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">3D 영상!</text>
+
+        <!-- ══ LIGHT RAY: screen up to apex ══ -->
+        <path d="M450 303 L450 302" stroke="#00e5ff" stroke-width="2.5" stroke-dasharray="5,4"/>
+        <polygon points="450,295  443,308  457,308" fill="#00bcd4"/>
+
+        <!-- ══ REFLECTED RAYS outward ══ -->
+        <path d="M413 162 L215 162" stroke="#7c4dff" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <polygon points="215,162  234,156  234,168" fill="#7c4dff"/>
+        <path d="M487 162 L685 162" stroke="#7c4dff" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <polygon points="685,162  666,156  666,168" fill="#7c4dff"/>
+
+        <!-- ══ VIEWER LABELS ══ -->
+        <rect x="8" y="136" width="202" height="56" rx="7"
+              fill="rgba(124,77,255,0.12)" stroke="rgba(124,77,255,0.4)" stroke-width="1.5"/>
+        <text x="109" y="159" font-size="22" fill="#5e00cc" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">← 반사된 영상</text>
+        <text x="109" y="182" font-size="18" fill="#5e00cc" font-family="Nanum Gothic,sans-serif" text-anchor="middle">관찰자에게 보임</text>
+
+        <rect x="690" y="136" width="202" height="56" rx="7"
+              fill="rgba(124,77,255,0.12)" stroke="rgba(124,77,255,0.4)" stroke-width="1.5"/>
+        <text x="791" y="159" font-size="22" fill="#5e00cc" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">반사된 영상 →</text>
+        <text x="791" y="182" font-size="18" fill="#5e00cc" font-family="Nanum Gothic,sans-serif" text-anchor="middle">관찰자에게 보임</text>
+
+        <!-- ══ SMARTPHONE (bottom) ══ -->
+        <rect x="310" y="308" width="280" height="68" rx="8"
+              fill="rgba(0,180,255,0.12)" stroke="#0099cc" stroke-width="2"/>
+        <rect x="320" y="316" width="260" height="52" rx="4"
+              fill="rgba(0,220,255,0.18)" stroke="#00bcd4" stroke-width="1.5"/>
+        <line x1="450" y1="316" x2="450" y2="368" stroke="#00bcd4" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="320" y1="342" x2="580" y2="342" stroke="#00bcd4" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="385" y="334" font-size="20" fill="#0077aa" font-family="sans-serif" text-anchor="middle">↑</text>
+        <text x="515" y="334" font-size="20" fill="#0077aa" font-family="sans-serif" text-anchor="middle">↓</text>
+        <text x="385" y="360" font-size="20" fill="#0077aa" font-family="sans-serif" text-anchor="middle">←</text>
+        <text x="515" y="360" font-size="20" fill="#0077aa" font-family="sans-serif" text-anchor="middle">→</text>
+
+        <!-- Phone label: emoji + text well below phone -->
+        <text x="450" y="392" font-size="28" font-family="sans-serif" text-anchor="middle">📱</text>
+        <text x="450" y="420" font-size="22" fill="#006699" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle" letter-spacing="4">스마트폰 화면</text>
+
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- ════════ DIVIDER: BLUE ════════ -->
+  <div class="div div-blue">
+    <div class="ln"></div>
+    <div class="dk"></div><div class="dk"></div><div class="dk"></div>
+    <div class="ln"></div>
+  </div>
+
+  <!-- ════════ REAL-WORLD STRIP ════════ -->
+  <div class="nature-strip">
+    <div class="nat-card">
+      <div class="nat-circle">🎤</div>
+      <div class="nat-title">홀로그램 공연</div>
+      <div class="nat-desc">세상을 떠난 가수가 무대에 다시 등장! 빛의 반사로 만드는 공연 홀로그램</div>
+    </div>
+    <div class="nat-card">
+      <div class="nat-circle">🏥</div>
+      <div class="nat-title">의료 3D 영상</div>
+      <div class="nat-desc">의사 선생님이 몸속 장기를 3D 홀로그램으로 보며 수술을 계획해요</div>
+    </div>
+    <div class="nat-card">
+      <div class="nat-circle">💳</div>
+      <div class="nat-title">보안 홀로그램</div>
+      <div class="nat-desc">신용카드·여권에 붙은 반짝이는 홀로그램! 위조를 막기 위해 사용해요</div>
+    </div>
+    <div class="nat-card">
+      <div class="nat-circle">🚀</div>
+      <div class="nat-title">미래 디스플레이</div>
+      <div class="nat-desc">SF 영화처럼 허공에 지도를 펼치고 조작하는 홀로그램이 개발 중이에요</div>
+    </div>
+  </div>
+
+  <!-- ════════ DIVIDER: GREEN ════════ -->
+  <div class="div div-green">
+    <div class="ln"></div>
+    <div class="dk"></div><div class="dk"></div><div class="dk"></div>
+    <div class="ln"></div>
+  </div>
+
+  <!-- ════════ ACTIVITY BOX ════════ -->
+  <div class="cbox act">
+    <div class="sh">
+      <div class="sh-icon">🛠️</div>
+      <div>
+        <div class="sh-lbl">직접 해보는 활동</div>
+        <div class="sh-ttl">나만의 홀로그램을 만들어 보자!</div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-tx"><em>투명 스크린</em>은 접는 선 따라 모서리 부분을 끼워줘요.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-tx">투명 스크린에 <em>고정 폼 보드</em>를 끼워줘요.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-tx">보드에다가 <em>투명 스크린을 고정</em>해줘요.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-tx"><em>벽체를 끼우고</em> 홈에 맞게 꾹~~ 눌러서 고정해줘요! 🔮</div>
+      </div>
+    </div>
+
+    <div class="safety">
+      <div class="safety-icon">💡</div>
+      <div class="safety-tx"><strong>포인트:</strong> 어두운 곳일수록 홀로그램이 더 선명하게 보여요! 화면 밝기를 최대로 높이면 더욱 멋진 3D 영상을 볼 수 있어요.</div>
+    </div>
+
+  </div>
+
+  <!-- ════════ DIVIDER: PURPLE ════════ -->
+  <div class="div div-purple">
+    <div class="ln"></div>
+    <div class="dk"></div><div class="dk"></div><div class="dk"></div>
+    <div class="ln"></div>
+  </div>
+
+  <!-- ════════ CHALLENGE SECTION ════════ -->
+  <div class="chall">
+    <div class="chall-head">🏆 도전! 홀로그램 마스터 🏆</div>
+    <div class="chall-cards">
+      <div class="chall-card">
+        <div class="chall-stars">⭐</div>
+        <div class="chall-level">레벨 1 — 탐험가</div>
+        <div class="chall-tx">팬 홀로그램에서 보이는 모양 3가지를 찾아 친구에게 설명해봐요!</div>
+      </div>
+      <div class="chall-card">
+        <div class="chall-stars">⭐⭐</div>
+        <div class="chall-level">레벨 2 — 발명가</div>
+        <div class="chall-tx">직접 만든 피라미드를 스마트폰 위에 올리고 3D 홀로그램을 감상해봐요!</div>
+      </div>
+      <div class="chall-card">
+        <div class="chall-stars">⭐⭐⭐</div>
+        <div class="chall-level">레벨 3 — 과학자</div>
+        <div class="chall-tx">페퍼의 유령 원리를 친구에게 설명할 수 있나요? 빛은 왜 방향을 바꿀까요?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ FOOTER ════════ -->
+  <div class="footer">
+    <div class="foot-line"></div>
+    <div class="foot-tag">빛을 이해하면 미래가 보여요 — ROHO 학교로 찾아가는 과학 체험</div>
+    <div class="foot-emojis">🔮 ✨ 💎 🌐 💡</div>
+  </div>
+
+  <!-- BOTTOM HOLO STRIPE -->
+  <div class="holo-stripe-bottom"></div>
+
+</div>
+</body>
+</html>

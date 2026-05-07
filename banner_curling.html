@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROHO 과학 체험 — 울트라슈퍼 컬링</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  @page { size: 60cm 180cm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nanum Gothic', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #ffffff;
+    width: 60cm;
+    min-height: 180cm;
+  }
+
+  .banner {
+    width: 60cm;
+    min-height: 180cm;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bg-deco {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .content { position: relative; z-index: 1; }
+
+  /* HEADER */
+  .header-band {
+    background: linear-gradient(135deg, #d0eeff 0%, #b8e0ff 50%, #d4f0ff 100%);
+    padding: 1.3cm 2.5cm;
+    text-align: center;
+    border-bottom: 0.15cm solid #1565c0;
+  }
+
+  .header-company {
+    font-size: 1.1cm;
+    font-weight: 800;
+    color: #0d47a1;
+    letter-spacing: 0.04cm;
+  }
+
+  .program-pill {
+    display: inline-block;
+    background: #1565c0;
+    color: white;
+    font-size: 0.85cm;
+    font-weight: 700;
+    padding: 0.2cm 0.7cm;
+    border-radius: 2cm;
+    margin-top: 0.4cm;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 2.2cm 2.5cm;
+    text-align: center;
+    background: linear-gradient(180deg, #f0f8ff 0%, #ffffff 100%);
+  }
+
+  .hero-emojis {
+    font-size: 3cm;
+    line-height: 1.2;
+    margin-bottom: 0.5cm;
+  }
+
+  .program-badge {
+    display: inline-block;
+    background: #1565c0;
+    color: white;
+    font-size: 0.9cm;
+    font-weight: 800;
+    padding: 0.25cm 0.8cm;
+    border-radius: 0.3cm;
+    margin-bottom: 0.5cm;
+    letter-spacing: 0.1cm;
+  }
+
+  .main-title {
+    font-size: 3.8cm;
+    font-weight: 800;
+    color: #0d47a1;
+    line-height: 1.1;
+    margin-bottom: 0.4cm;
+  }
+
+  .hero-subtitle {
+    font-size: 1.4cm;
+    color: #1565c0;
+    font-weight: 700;
+    margin-bottom: 1cm;
+  }
+
+  .hero-deco-line {
+    width: 80%;
+    margin: 0 auto;
+    height: 0.12cm;
+    background: linear-gradient(90deg, transparent, #1565c0, transparent);
+  }
+
+  /* DIVIDERS */
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 1.6cm 2.5cm;
+    gap: 0.5cm;
+  }
+
+  .divider-line { flex: 1; height: 0.08cm; }
+  .divider-dot { width: 0.4cm; height: 0.4cm; border-radius: 50%; flex-shrink: 0; }
+
+  .divider-cyan .divider-line { background: linear-gradient(90deg, transparent, #00bcd4, transparent); }
+  .divider-cyan .divider-dot { background: #00bcd4; box-shadow: 0 0 0.3cm rgba(0,188,212,0.6); }
+
+  .divider-green .divider-line { background: linear-gradient(90deg, transparent, #43a047, transparent); }
+  .divider-green .divider-dot { background: #43a047; box-shadow: 0 0 0.3cm rgba(67,160,71,0.6); }
+
+  .divider-gold .divider-line { background: linear-gradient(90deg, transparent, #f9a825, transparent); }
+  .divider-gold .divider-dot { background: #f9a825; box-shadow: 0 0 0.3cm rgba(249,168,37,0.6); }
+
+  .divider-purple .divider-line { background: linear-gradient(90deg, transparent, #8e24aa, transparent); }
+  .divider-purple .divider-dot { background: #8e24aa; box-shadow: 0 0 0.3cm rgba(142,36,170,0.6); }
+
+  .divider-blue .divider-line { background: linear-gradient(90deg, transparent, #1565c0, transparent); }
+  .divider-blue .divider-dot { background: #1565c0; box-shadow: 0 0 0.3cm rgba(21,101,192,0.6); }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 1.7cm;
+    font-weight: 800;
+    color: #0d47a1;
+    margin-bottom: 0.8cm;
+    text-align: center;
+  }
+
+  /* FUN FACTS */
+  .fun-facts { margin: 0 2.5cm; }
+
+  .facts-row { display: flex; gap: 0.7cm; }
+
+  .fact-card {
+    flex: 1;
+    padding: 0.8cm 0.9cm;
+    border-radius: 0.4cm;
+    border-left: 0.2cm solid;
+  }
+
+  .fact-card.blue   { background: rgba(220,240,255,0.85); border-color: #1565c0; }
+  .fact-card.teal   { background: rgba(220,255,250,0.85); border-color: #00897b; }
+  .fact-card.purple { background: rgba(240,220,255,0.85); border-color: #8e24aa; }
+
+  .fact-label { font-size: 0.9cm; font-weight: 800; color: #0d47a1; margin-bottom: 0.3cm; }
+  .fact-body  { font-size: 1cm; color: #1a237e; line-height: 1.5; }
+
+  /* SCIENCE BOX */
+  .science-box {
+    margin: 0 2.5cm;
+    background: rgba(220,240,255,0.85);
+    border: 0.1cm solid #90caf9;
+    border-radius: 0.5cm;
+    padding: 1.6cm 2.2cm;
+  }
+
+  .science-box .section-title { text-align: left; }
+
+  .science-intro {
+    font-size: 1.1cm;
+    color: #1a237e;
+    line-height: 1.7;
+    margin-bottom: 1cm;
+  }
+
+  .concept-row { display: flex; gap: 0.8cm; margin-bottom: 1cm; }
+
+  .concept-card {
+    flex: 1;
+    background: rgba(255,255,255,0.8);
+    border-radius: 0.4cm;
+    padding: 0.7cm 0.9cm;
+    border-top: 0.2cm solid #1565c0;
+  }
+
+  .concept-name { font-size: 1.05cm; font-weight: 800; color: #0d47a1; margin-bottom: 0.3cm; }
+  .concept-text { font-size: 0.95cm; color: #1a237e; line-height: 1.5; }
+
+  /* RULES BOX */
+  .rules-box {
+    margin: 0 2.5cm;
+    background: rgba(255,243,215,0.9);
+    border: 0.1cm solid #f9a825;
+    border-radius: 0.5cm;
+    padding: 1.6cm 2.2cm;
+  }
+
+  .rules-box .section-title { color: #7a4f00; text-align: left; }
+
+  .rules-grid { display: flex; gap: 0.8cm; }
+
+  .rule-item {
+    flex: 1;
+    background: rgba(255,255,255,0.7);
+    border-radius: 0.4cm;
+    padding: 0.7cm 0.9cm;
+    border-left: 0.2cm solid #f9a825;
+  }
+
+  .rule-icon  { font-size: 1.5cm; margin-bottom: 0.3cm; }
+  .rule-title { font-size: 1cm; font-weight: 800; color: #7a4f00; margin-bottom: 0.25cm; }
+  .rule-text  { font-size: 0.95cm; color: #5d4037; line-height: 1.5; }
+
+  /* ACTIVITY BOX */
+  .activity-box {
+    margin: 0 2.5cm;
+    background: rgba(255,243,215,0.9);
+    border: 0.1cm solid #f9a825;
+    border-radius: 0.5cm;
+    padding: 1.6cm 2.2cm;
+  }
+
+  .activity-box .section-title { color: #7a4f00; }
+
+  .steps-list {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6cm;
+  }
+
+  .step { display: flex; align-items: flex-start; gap: 0.6cm; }
+
+  .step-num {
+    width: 1.2cm;
+    height: 1.2cm;
+    background: #f9a825;
+    color: white;
+    font-weight: 800;
+    font-size: 0.9cm;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-text { font-size: 1.1cm; color: #5d4037; line-height: 1.6; padding-top: 0.1cm; }
+
+  .safety-tip {
+    margin-top: 0.8cm;
+    padding: 0.6cm 1cm;
+    background: rgba(255,235,59,0.3);
+    border-radius: 0.3cm;
+    font-size: 1cm;
+    color: #5d4037;
+    text-align: center;
+  }
+
+  /* NATURE STRIP */
+  .nature-strip { margin: 0 2.5cm; }
+
+  .nature-row { display: flex; gap: 0.8cm; justify-content: center; }
+
+  .nature-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1cm 0.5cm;
+    background: rgba(240,248,255,0.9);
+    border-radius: 50%;
+    border: 0.12cm solid #90caf9;
+    aspect-ratio: 1;
+    justify-content: center;
+  }
+
+  .nature-emoji { font-size: 2cm; margin-bottom: 0.3cm; }
+  .nature-title { font-size: 1.05cm; font-weight: 800; color: #0d47a1; text-align: center; }
+  .nature-sub   { font-size: 0.85cm; color: #1565c0; text-align: center; }
+
+  /* CHALLENGES */
+  .challenges { margin: 0 2.5cm; }
+
+  .challenge-cards { display: flex; gap: 0.7cm; }
+
+  .challenge-card {
+    flex: 1;
+    padding: 0.9cm 1cm;
+    border-radius: 0.4cm;
+    background: rgba(240,220,255,0.85);
+    border: 0.1cm solid #ce93d8;
+  }
+
+  .challenge-stars { font-size: 1.1cm; margin-bottom: 0.3cm; }
+  .challenge-title { font-size: 1.1cm; font-weight: 800; color: #4a148c; margin-bottom: 0.3cm; }
+  .challenge-desc  { font-size: 1.05cm; color: #6a1b9a; line-height: 1.5; }
+
+  /* FOOTER */
+  .footer { margin: 1.6cm 2.5cm 1cm; text-align: center; }
+
+  .footer-line {
+    height: 0.08cm;
+    background: linear-gradient(90deg, transparent, #90caf9, transparent);
+    margin-bottom: 0.8cm;
+  }
+
+  .footer-tagline { font-size: 1.1cm; color: #0d47a1; font-weight: 700; margin-bottom: 0.4cm; }
+  .footer-emojis  { font-size: 1.5cm; }
+</style>
+</head>
+<body>
+<div class="banner">
+
+  <!-- Background decoration -->
+  <svg class="bg-deco" viewBox="0 0 600 1800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g opacity="0.035" stroke="#1565c0" stroke-width="1">
+      <line x1="0" y1="250" x2="600" y2="380"/>
+      <line x1="0" y1="480" x2="600" y2="560"/>
+      <line x1="0" y1="720" x2="600" y2="820"/>
+      <line x1="0" y1="960" x2="600" y2="1020"/>
+      <line x1="0" y1="1180" x2="600" y2="1280"/>
+      <line x1="0" y1="1400" x2="600" y2="1480"/>
+      <line x1="0" y1="1620" x2="600" y2="1720"/>
+    </g>
+    <g opacity="0.06" fill="#1565c0">
+      <circle cx="60"  cy="320"  r="4"/>
+      <circle cx="540" cy="560"  r="3"/>
+      <circle cx="90"  cy="800"  r="5"/>
+      <circle cx="510" cy="1040" r="4"/>
+      <circle cx="70"  cy="1280" r="3"/>
+      <circle cx="530" cy="1520" r="5"/>
+      <circle cx="120" cy="1720" r="4"/>
+    </g>
+    <defs>
+      <radialGradient id="gb" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#1565c0" stop-opacity="0.05"/>
+        <stop offset="100%" stop-color="#1565c0" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="80"  cy="500"  rx="220" ry="220" fill="url(#gb)"/>
+    <ellipse cx="520" cy="1050" rx="200" ry="200" fill="url(#gb)"/>
+    <ellipse cx="100" cy="1600" rx="160" ry="160" fill="url(#gb)"/>
+  </svg>
+
+  <div class="content">
+
+    <!-- ① HEADER -->
+    <div class="header-band">
+      <div class="header-company">🔬 ROHO 학교로 찾아가는 과학 체험</div>
+      <div class="program-pill">PROGRAM 03</div>
+    </div>
+
+    <!-- ② HERO -->
+    <div class="hero">
+      <div class="hero-emojis">🥌 🎯 ❄️</div>
+      <div class="program-badge">PROGRAM 03</div>
+      <div class="main-title">울트라슈퍼 컬링</div>
+      <div class="hero-subtitle">마찰력과 관성의 과학 — 목표를 향해 완벽하게 밀어라!</div>
+      <div class="hero-deco-line"></div>
+    </div>
+
+    <!-- ③ FUN FACTS -->
+    <div class="fun-facts">
+      <div class="section-title">🧊 신기한 컬링 이야기</div>
+      <div class="facts-row">
+        <div class="fact-card blue">
+          <div class="fact-label">🥌 컬링 스톤의 무게</div>
+          <div class="fact-body">올림픽 컬링 스톤은 무려 <strong>약 20kg</strong>! 스코틀랜드 화강암으로 만들며 전 세계에서 딱 두 곳에서만 채취해요.</div>
+        </div>
+        <div class="fact-card teal">
+          <div class="fact-label">🧊 얼음이 왜 이렇게 미끄럽지?</div>
+          <div class="fact-body">얼음의 마찰계수는 <strong>겨우 0.01</strong> — 일반 바닥(약 0.5)보다 무려 <strong>50배</strong>나 미끄럽답니다!</div>
+        </div>
+        <div class="fact-card purple">
+          <div class="fact-label">🧹 스위핑의 비밀</div>
+          <div class="fact-body">빗자루로 빠르게 문지르면 살짝 녹아서 돌이 <strong>더 멀리, 덜 꺾여</strong> 나가요. 마찰을 실시간 제어하는 거예요!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVIDER CYAN -->
+    <div class="divider divider-cyan">
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div>
+    </div>
+
+    <!-- ④ SCIENCE BOX -->
+    <div class="science-box">
+      <div class="section-title">⚗️ 과학 원리 탐구</div>
+      <div class="science-intro">
+        컬링은 단순히 세게 미는 게 아니에요! <strong>마찰력</strong>이 스톤의 속도를 줄이고,
+        <strong>관성</strong>이 스톤을 계속 앞으로 나아가게 하며,
+        살짝 넣은 <strong>회전</strong>이 경로를 곡선으로 만들어요.
+        힘의 크기와 방향, 회전량을 딱 맞게 조절하는 것이 컬링의 핵심이랍니다!
+      </div>
+      <div class="concept-row">
+        <div class="concept-card">
+          <div class="concept-name">마찰력</div>
+          <div class="concept-text">두 물체가 닿아 움직일 때 움직임을 방해하는 힘이에요. 매끄러울수록 마찰이 작아져 더 멀리 미끄러져요.</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-name">관성</div>
+          <div class="concept-text">움직이는 물체는 계속 움직이려 해요. 손을 떠난 스톤이 멈추지 않고 쭉 나아가는 이유가 바로 관성이에요!</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-name">회전 효과</div>
+          <div class="concept-text">살짝 회전을 주며 밀면 스톤의 앞뒤 마찰 방향이 달라져 경로가 곡선으로 꺾여요. 이것이 바로 '컬링(curling)'의 원리!</div>
+        </div>
+      </div>
+
+      <!-- SVG: Curling board top-down diagram -->
+      <svg viewBox="0 0 940 300" style="width:100%;margin-top:0.4cm;" xmlns="http://www.w3.org/2000/svg">
+        <!-- Board -->
+        <rect x="30" y="50" width="880" height="200" rx="10" fill="#e3f2fd" stroke="#1565c0" stroke-width="3"/>
+        <!-- Centre line -->
+        <line x1="30" y1="150" x2="910" y2="150" stroke="#90caf9" stroke-width="1.5" stroke-dasharray="8,6"/>
+
+        <!-- Left House -->
+        <circle cx="140" cy="150" r="75" fill="none" stroke="#e53935" stroke-width="3"/>
+        <circle cx="140" cy="150" r="53" fill="none" stroke="#ffffff"  stroke-width="3"/>
+        <circle cx="140" cy="150" r="32" fill="none" stroke="#e53935" stroke-width="3"/>
+        <circle cx="140" cy="150" r="13" fill="#e53935"/>
+        <text x="140" y="240" text-anchor="middle" font-size="18" fill="#0d47a1"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">하우스</text>
+
+        <!-- Right House -->
+        <circle cx="800" cy="150" r="75" fill="none" stroke="#e53935" stroke-width="3"/>
+        <circle cx="800" cy="150" r="53" fill="none" stroke="#ffffff"  stroke-width="3"/>
+        <circle cx="800" cy="150" r="32" fill="none" stroke="#e53935" stroke-width="3"/>
+        <circle cx="800" cy="150" r="13" fill="#e53935"/>
+        <text x="800" y="240" text-anchor="middle" font-size="18" fill="#0d47a1"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">하우스</text>
+
+        <!-- Hog lines -->
+        <line x1="235" y1="50" x2="235" y2="250" stroke="#f9a825" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <line x1="705" y1="50" x2="705" y2="250" stroke="#f9a825" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <text x="235" y="40" text-anchor="middle" font-size="16" fill="#886600"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">호그라인</text>
+        <text x="705" y="40" text-anchor="middle" font-size="16" fill="#886600"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">호그라인</text>
+
+        <!-- Throw / hack lines -->
+        <line x1="340" y1="50" x2="340" y2="250" stroke="#43a047" stroke-width="2.5"/>
+        <line x1="600" y1="50" x2="600" y2="250" stroke="#43a047" stroke-width="2.5"/>
+        <text x="340" y="275" text-anchor="middle" font-size="16" fill="#2e7d32"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">던지는 선</text>
+        <text x="600" y="275" text-anchor="middle" font-size="16" fill="#2e7d32"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">던지는 선</text>
+
+        <!-- Dimension label -->
+        <text x="470" y="160" text-anchor="middle" font-size="22" fill="#1565c0"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="800">← 7m →</text>
+        <!-- Width label -->
+        <text x="16" y="155" text-anchor="middle" font-size="14" fill="#1565c0"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700"
+              transform="rotate(-90 16 150)">1.5m</text>
+
+        <!-- Puck with curl path arrow -->
+        <circle cx="470" cy="105" r="16" fill="#1565c0" opacity="0.85"/>
+        <text x="470" y="110" text-anchor="middle" font-size="13" fill="white"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">스톤</text>
+        <path d="M486 95 Q540 62 560 105 Q572 135 548 148"
+              stroke="#f9a825" stroke-width="2.5" fill="none" stroke-dasharray="5,3"/>
+        <polygon points="548,148 539,136 554,136" fill="#f9a825"/>
+        <text x="565" y="172" text-anchor="middle" font-size="15" fill="#886600"
+              font-family="Nanum Gothic, Malgun Gothic, sans-serif" font-weight="700">회전 궤도!</text>
+      </svg>
+    </div>
+
+    <!-- DIVIDER GREEN -->
+    <div class="divider divider-green">
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div>
+    </div>
+
+    <!-- ⑤ RULES BOX -->
+    <div class="rules-box">
+      <div class="section-title">📋 게임 규칙</div>
+      <div class="rules-grid">
+        <div class="rule-item">
+          <div class="rule-icon">👥</div>
+          <div class="rule-title">팀 구성</div>
+          <div class="rule-text">두 팀으로 나눠요. 각 팀은 색이 다른 스톤을 사용해 서로 구분해요!</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon">🎯</div>
+          <div class="rule-title">목표</div>
+          <div class="rule-text">보드 반대편 <strong>하우스(원 과녁)</strong> 중심에 스톤을 최대한 가깝게 놓아요!</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon">🔄</div>
+          <div class="rule-title">진행 방법</div>
+          <div class="rule-text">양 팀이 <strong>한 명씩 번갈아</strong> 스톤을 밀어요. 상대 스톤을 맞혀 밀어낼 수도 있어요!</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon">🏆</div>
+          <div class="rule-title">점수 계산</div>
+          <div class="rule-text">라운드가 끝나면 <strong>중심에 가장 가까운</strong> 팀이 그 라운드 점수를 가져가요!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVIDER GOLD -->
+    <div class="divider divider-gold">
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div>
+    </div>
+
+    <!-- ⑥ NATURE STRIP -->
+    <div class="nature-strip">
+      <div class="section-title">🌍 실생활 속 마찰의 과학</div>
+      <div class="nature-row">
+        <div class="nature-card">
+          <div class="nature-emoji">🥌</div>
+          <div class="nature-title">올림픽 컬링</div>
+          <div class="nature-sub">정밀한 마찰 제어</div>
+        </div>
+        <div class="nature-card">
+          <div class="nature-emoji">⛸️</div>
+          <div class="nature-title">아이스 스케이팅</div>
+          <div class="nature-sub">초저마찰 활주</div>
+        </div>
+        <div class="nature-card">
+          <div class="nature-emoji">🎳</div>
+          <div class="nature-title">볼링</div>
+          <div class="nature-sub">회전과 마찰의 예술</div>
+        </div>
+        <div class="nature-card">
+          <div class="nature-emoji">🚗</div>
+          <div class="nature-title">자동차 브레이크</div>
+          <div class="nature-sub">마찰로 속도 제어</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVIDER BLUE -->
+    <div class="divider divider-blue">
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div>
+    </div>
+
+    <!-- ⑦ ACTIVITY BOX -->
+    <div class="activity-box">
+      <div class="section-title">🎮 지금 바로 게임 시작!</div>
+      <div class="steps-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">두 팀으로 나누고, 각 팀 색깔의 스톤(🔵 파랑 / 🔴 빨강)을 받아요.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">던지는 선 뒤에 서서, 보드 반대편 하우스 중심을 조준해요.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">스톤을 보드 바닥에 대고 살며시 밀어요 — 힘 조절이 핵심이에요!</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">두 팀이 번갈아 스톤을 밀고, 모두 던진 후 중심에 더 가까운 팀이 1점!</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-text">3라운드를 모두 진행해 총점이 높은 팀이 🏆 울트라슈퍼 챔피언!</div>
+        </div>
+      </div>
+      <div class="safety-tip">⚠️ 안전 수칙: 보드 위에 올라가지 말고, 스톤을 세게 던지지 말고 부드럽게 밀어서 사용해요!</div>
+    </div>
+
+    <!-- DIVIDER PURPLE -->
+    <div class="divider divider-purple">
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div><div class="divider-line"></div>
+      <div class="divider-dot"></div>
+    </div>
+
+    <!-- ⑧ CHALLENGE SECTION -->
+    <div class="challenges">
+      <div class="section-title">🏆 도전 과제</div>
+      <div class="challenge-cards">
+        <div class="challenge-card">
+          <div class="challenge-stars">⭐</div>
+          <div class="challenge-title">하우스 입성!</div>
+          <div class="challenge-desc">스톤을 하우스 원 안에 넣어보세요. 얼마나 힘을 줘야 딱 맞게 들어갈까요?</div>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-stars">⭐⭐</div>
+          <div class="challenge-title">상대 스톤 튕겨내기!</div>
+          <div class="challenge-desc">하우스 안에 있는 상대 스톤을 정확히 맞혀서 밀어내고 내 스톤이 그 자리를 차지해요!</div>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-stars">⭐⭐⭐</div>
+          <div class="challenge-title">정중앙 명중!</div>
+          <div class="challenge-desc">3번 연속으로 스톤을 하우스 가장 작은 원(버튼) 위에 정확히 올려보세요!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑨ FOOTER -->
+    <div class="footer">
+      <div class="footer-line"></div>
+      <div class="footer-tagline">과학은 우리 주변 모든 곳에 있어요! 🔬 오늘도 신나는 탐험 중!</div>
+      <div class="footer-emojis">🥌 ❄️ 🎯 ⭐ 🏆</div>
+    </div>
+
+  </div><!-- .content -->
+</div><!-- .banner -->
+</body>
+</html>

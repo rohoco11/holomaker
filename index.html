@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Convert photos and videos into pyramid hologram format — free, instant, private." />
+  <meta name="theme-color" content="#06060f" />
+  <title>HoloMaker — Pyramid Hologram Creator</title>
+  <style>
+    /* ─── Design tokens ─── */
+    :root {
+      --bg:       #06060f;
+      --surf:     #0d0d1f;
+      --surf2:    #13132a;
+      --border:   rgba(130, 80, 255, 0.22);
+      --purple:   #8b5cf6;
+      --purpleL:  #a78bfa;
+      --cyan:     #06b6d4;
+      --cyanL:    #22d3ee;
+      --text:     #f1f5f9;
+      --muted:    #8892a4;
+      --green:    #10b981;
+      --red:      #ef4444;
+      --r:        18px;
+      --r-sm:     10px;
+    }
+
+    /* ─── Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+    img, video { display: block; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    /* ─── Ambient blobs ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 10%, rgba(139,92,246,.10) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 90%, rgba(6,182,212,.07) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ─── Layout ─── */
+    .page { width: 100%; max-width: 480px; padding: 24px 16px 56px; position: relative; z-index: 1; }
+
+    /* ─── Header ─── */
+    .header { text-align: center; margin-bottom: 36px; }
+    .header .gem { font-size: 54px; display: block; margin-bottom: 14px; animation: bob 3.2s ease-in-out infinite; }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+    .header h1 {
+      font-size: clamp(26px, 7vw, 32px); font-weight: 800; letter-spacing: -.5px;
+      background: linear-gradient(130deg, var(--purpleL), var(--cyanL));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 10px;
+    }
+    .header p { color: var(--muted); font-size: 15px; line-height: 1.55; }
+
+    /* ─── Cards ─── */
+    .card {
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      margin-bottom: 14px;
+    }
+
+    /* ─── Upload zone ─── */
+    .upload-zone {
+      padding: 40px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: background .25s, border-color .25s;
+      border: 2px dashed var(--border);
+      border-radius: var(--r);
+      background: var(--surf);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      background: var(--surf2);
+      border-color: var(--purple);
+    }
+    .upload-zone .up-icon { font-size: 52px; margin-bottom: 16px; display: block; }
+    .upload-zone h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+    .upload-zone .sub { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
+    .upload-zone .file-types { color: var(--muted); font-size: 12px; margin-top: 14px; }
+
+    /* ─── Pill button ─── */
+    .pill {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      border: none; border-radius: 50px; padding: 13px 28px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      transition: transform .15s, box-shadow .15s; text-decoration: none;
+      width: auto;
+    }
+    .pill:active { transform: scale(.96); }
+    .pill-purple {
+      background: linear-gradient(135deg, var(--purple), #5b21b6);
+      color: #fff;
+      box-shadow: 0 4px 22px rgba(139,92,246,.45);
+    }
+    .pill-green {
+      background: linear-gradient(135deg, #059669, var(--green));
+      color: #fff;
+      box-shadow: 0 4px 22px rgba(16,185,129,.35);
+    }
+    .pill-ghost {
+      background: var(--surf2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .pill-block { width: 100%; }
+
+    /* ─── Settings ─── */
+    .settings-card { padding: 20px; }
+    .settings-card .label-sm {
+      font-size: 11.5px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--muted); margin-bottom: 14px;
+    }
+    .setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .setting-row:last-child { margin-bottom: 0; }
+    .setting-name { font-size: 14.5px; font-weight: 500; }
+    .setting-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    select {
+      background: var(--surf2); color: var(--text); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 10px 32px 10px 13px;
+      font-size: 16px; outline: none; cursor: pointer;
+      min-height: 44px;
+      -webkit-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='8' viewBox='0 0 11 8'%3E%3Cpath fill='%238892a4' d='M5.5 8 0 0h11z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+
+    /* ─── Processing ─── */
+    .proc-card { padding: 36px 24px; text-align: center; }
+    .proc-icon { font-size: 52px; display: block; margin-bottom: 18px; animation: spin 1.6s linear infinite; }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .proc-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+    .proc-card .proc-sub { color: var(--muted); font-size: 14px; margin-bottom: 22px; line-height: 1.5; }
+    .prog-wrap { width: 100%; height: 6px; background: var(--surf2); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--cyan)); border-radius: 3px; transition: width .35s ease; width: 0%; }
+    .prog-pct { font-size: 13px; color: var(--muted); }
+    .warn-box {
+      background: rgba(251,191,36,.07); border: 1px solid rgba(251,191,36,.25);
+      border-radius: var(--r-sm); padding: 11px 14px; margin-top: 16px;
+      font-size: 13px; color: #fbbf24; text-align: left; line-height: 1.5;
+    }
+
+    /* ─── Result ─── */
+    .result-card { overflow: hidden; }
+    .result-preview { width: 100%; aspect-ratio: 1/1; object-fit: contain; background: #000; }
+    .result-meta { padding: 12px 16px 4px; font-size: 13px; color: var(--muted); }
+    .result-actions { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    @keyframes glow {
+      0%,100%{box-shadow: 0 0 18px rgba(139,92,246,.3)}
+      50%{box-shadow: 0 0 36px rgba(6,182,212,.5)}
+    }
+    .result-card.active { animation: glow 2.2s ease-in-out infinite; }
+
+    /* ─── How-to ─── */
+    .how-card { padding: 22px; }
+    .how-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+    .steps { display: flex; flex-direction: column; gap: 16px; }
+    .step { display: flex; align-items: flex-start; gap: 14px; }
+    .step-num {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .step h4 { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; }
+    .step p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ─── Privacy badge ─── */
+    .privacy { text-align: center; padding: 20px 16px; font-size: 13px; color: var(--muted); }
+    .privacy span { display: inline-flex; align-items: center; gap: 5px; }
+
+    /* ─── Error toast ─── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: var(--red); color: #fff;
+      padding: 12px 26px; border-radius: 50px;
+      font-size: 14px; font-weight: 600;
+      z-index: 9999; transition: transform .3s;
+      white-space: nowrap; max-width: 90vw; text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ─── Utility ─── */
+    .hidden { display: none !important; }
+
+    #fileInput { display: none; }
+
+    /* ─── Mobile polish ─── */
+    @media (max-width: 380px) {
+      .header h1 { font-size: 24px; }
+      .upload-zone { padding: 32px 14px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <span class="gem">🔮</span>
+    <h1>HoloMaker</h1>
+    <p>Transform any photo or video into a<br>stunning pyramid hologram display</p>
+  </header>
+
+  <!-- ── State: Upload ── -->
+  <div id="stateUpload">
+
+    <div class="upload-zone" id="uploadZone">
+      <span class="up-icon">📤</span>
+      <h2>Upload Media</h2>
+      <p class="sub">Drag &amp; drop a photo or video here,<br>or tap the button below</p>
+      <button class="pill pill-purple" onclick="event.stopPropagation(); fileInput.click()">
+        Choose File
+      </button>
+      <div class="file-types">JPG · PNG · WebP · MP4 · WebM</div>
+    </div>
+
+    <div class="card settings-card">
+      <p class="label-sm">Output Settings</p>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Resolution</div>
+          <div class="setting-desc">Square output size</div>
+        </div>
+        <select id="outputSize">
+          <option value="720">720 × 720</option>
+          <option value="1080" selected>1080 × 1080</option>
+          <option value="1440">1440 × 1440</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Background</div>
+          <div class="setting-desc">Color behind the 4 views</div>
+        </div>
+        <select id="bgColor">
+          <option value="#000000" selected>Black</option>
+          <option value="#06060f">Dark Navy</option>
+          <option value="#0d0018">Deep Purple</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Video FPS</div>
+          <div class="setting-desc">Output frame rate</div>
+        </div>
+        <select id="fps">
+          <option value="24">24 fps</option>
+          <option value="30" selected>30 fps</option>
+          <option value="60">60 fps</option>
+        </select>
+      </div>
+    </div>
+
+  </div><!-- /#stateUpload -->
+
+  <!-- ── State: Processing ── -->
+  <div id="stateProcessing" class="hidden">
+    <div class="card proc-card">
+      <span class="proc-icon">⚙️</span>
+      <h3>Creating your hologram</h3>
+      <p class="proc-sub" id="procStatus">Loading media…</p>
+      <div class="prog-wrap"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-pct" id="progPct">0%</div>
+      <div class="warn-box" id="videoWarn" style="display:none">
+        ⚠️ Keep this tab open while processing.
+        Video encodes in real-time — a 30-second clip takes ~30 seconds.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── State: Result ── -->
+  <div id="stateResult" class="hidden">
+    <div class="card result-card" id="resultCard">
+      <div id="previewWrap"></div>
+      <div class="result-meta" id="resultMeta"></div>
+      <div class="result-actions">
+        <a id="downloadBtn" class="pill pill-green pill-block">⬇️ Save to Photos</a>
+        <button class="pill pill-ghost pill-block" onclick="resetApp()">🔄 Create Another</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- How to view -->
+  <div class="card how-card">
+    <h3>💡 How to view your hologram</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Download the file</h4>
+          <p>Tap "Save to Photos" to download your hologram image or video.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Build a pyramid</h4>
+          <p>Cut 4 identical trapezoid panels from a clear plastic sheet or CD case. Tape them into a 4-sided pyramid shape (no top or bottom).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Place on your screen</h4>
+          <p>Open the downloaded file in full-screen on your phone. Set the pyramid's small opening face-down in the center of the screen.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Watch the hologram</h4>
+          <p>Dim the lights and look through each side of the pyramid — the floating 3D effect will appear!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="privacy">
+    <span>🔒 100% private — all processing happens in your browser. Nothing is uploaded.</span>
+  </div>
+
+</div><!-- /.page -->
+
+<div class="toast" id="toast"></div>
+<input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" />
+
+<script>
+'use strict';
+
+/* ──────────────────────────────────────────
+   DOM refs
+────────────────────────────────────────── */
+const fileInput       = document.getElementById('fileInput');
+const uploadZone      = document.getElementById('uploadZone');
+const stateUpload     = document.getElementById('stateUpload');
+const stateProcessing = document.getElementById('stateProcessing');
+const stateResult     = document.getElementById('stateResult');
+const procStatus      = document.getElementById('procStatus');
+const progFill        = document.getElementById('progFill');
+const progPct         = document.getElementById('progPct');
+const videoWarn       = document.getElementById('videoWarn');
+const previewWrap     = document.getElementById('previewWrap');
+const resultMeta      = document.getElementById('resultMeta');
+const downloadBtn     = document.getElementById('downloadBtn');
+const resultCard      = document.getElementById('resultCard');
+
+/* ──────────────────────────────────────────
+   Upload interactions
+────────────────────────────────────────── */
+uploadZone.addEventListener('click', () => fileInput.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+/* ──────────────────────────────────────────
+   State machine
+────────────────────────────────────────── */
+function setState(name) {
+  stateUpload.classList.add('hidden');
+  stateProcessing.classList.add('hidden');
+  stateResult.classList.add('hidden');
+  resultCard.classList.remove('active');
+  if (name === 'upload')      { stateUpload.classList.remove('hidden'); }
+  if (name === 'processing')  { stateProcessing.classList.remove('hidden'); }
+  if (name === 'result')      { stateResult.classList.remove('hidden'); resultCard.classList.add('active'); }
+}
+
+function setProgress(pct, status) {
+  progFill.style.width = pct + '%';
+  progPct.textContent  = Math.round(pct) + '%';
+  if (status) procStatus.textContent = status;
+}
+
+/* ──────────────────────────────────────────
+   File handling
+────────────────────────────────────────── */
+function handleFile(file) {
+  const allowedImages = ['image/jpeg', 'image/png', 'image/webp'];
+  const allowedVideos = ['video/mp4', 'video/webm'];
+  const isImage = allowedImages.includes(file.type);
+  const isVideo = allowedVideos.includes(file.type);
+  if (!isImage && !isVideo) {
+    showToast('Please upload a JPG, PNG, WebP, MP4, or WebM file.');
+    return;
+  }
+  setState('processing');
+  setProgress(0, 'Loading media…');
+  if (isImage) {
+    processImage(file);
+  } else {
+    videoWarn.style.display = '';
+    processVideo(file);
+  }
+}
+
+/* ──────────────────────────────────────────
+   Settings helpers
+────────────────────────────────────────── */
+function getOutputSize() { return parseInt(document.getElementById('outputSize').value, 10); }
+function getBgColor()    { return document.getElementById('bgColor').value; }
+function getFps()        { return parseInt(document.getElementById('fps').value, 10); }
+
+/* ──────────────────────────────────────────
+   Hologram layout renderer
+   4 panels each S/2 × S/2, meeting at center:
+     [ ] [T] [ ]
+     [L] [·] [R]
+     [ ] [B] [ ]
+   T=180°  B=0°  L=+90°  R=−90°
+────────────────────────────────────────── */
+function drawHologramFrame(ctx, source, S, srcW, srcH) {
+  const bg = getBgColor();
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, S, S);
+
+  /* Scale source to fill half the canvas (540 px at 1080 p) */
+  const panel = S / 2;
+  const sc    = Math.min(panel / srcW, panel / srcH);
+  const dw    = srcW * sc;
+  const dh    = srcH * sc;
+
+  /* Each panel is clipped to its own arm of the cross so corners stay black */
+  const H = S / 2, Q = S / 4;
+  const views = [
+    { x: S / 2,     y: Q,     a: Math.PI,      cx: Q, cy: 0, cw: H, ch: H },  // Top
+    { x: S * 3 / 4, y: S / 2, a: -Math.PI / 2, cx: H, cy: Q, cw: H, ch: H },  // Right
+    { x: S / 2,     y: S*3/4, a: 0,            cx: Q, cy: H, cw: H, ch: H },  // Bottom
+    { x: Q,         y: S / 2, a: Math.PI / 2,  cx: 0, cy: Q, cw: H, ch: H },  // Left
+  ];
+
+  for (const { x, y, a, cx, cy, cw, ch } of views) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(cx, cy, cw, ch);
+    ctx.clip();
+    ctx.translate(x, y);
+    ctx.rotate(a);
+    ctx.drawImage(source, -dw / 2, -dh / 2, dw, dh);
+    ctx.restore();
+  }
+}
+
+/* ──────────────────────────────────────────
+   Image processing
+────────────────────────────────────────── */
+function processImage(file) {
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = () => {
+    setProgress(30, 'Rendering hologram layout…');
+    const S      = getOutputSize();
+    const canvas = document.createElement('canvas');
+    canvas.width  = S;
+    canvas.height = S;
+    const ctx = canvas.getContext('2d');
+
+    drawHologramFrame(ctx, img, S, img.naturalWidth, img.naturalHeight);
+    setProgress(80, 'Exporting PNG…');
+
+    canvas.toBlob(blob => {
+      URL.revokeObjectURL(url);
+      setProgress(100, 'Done!');
+      setTimeout(() => showResult(blob, 'image', S), 350);
+    }, 'image/png');
+  };
+  img.onerror = () => { showToast('Could not load image.'); resetApp(); };
+  img.src = url;
+}
+
+/* ──────────────────────────────────────────
+   Video processing — picks best MP4 path
+────────────────────────────────────────── */
+async function processVideo(file) {
+  try {
+    setProgress(5, 'Decoding video…');
+
+    const video = document.createElement('video');
+    video.muted       = true;
+    video.playsInline = true;
+    const url = URL.createObjectURL(file);
+    video.src = url;
+
+    await new Promise((res, rej) => {
+      video.addEventListener('loadedmetadata', res, { once: true });
+      video.addEventListener('error', rej, { once: true });
+    });
+
+    const S   = getOutputSize();
+    const fps = getFps();
+    const dur = video.duration;
+    let blob;
+
+    if (typeof VideoEncoder !== 'undefined') {
+      // Best: WebCodecs → H.264 → MP4 (Chrome 94+, Edge 94+, Safari 16.4+)
+      blob = await encodeWithWebCodecs(video, S, fps, dur);
+    } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+      // Fallback: native MP4 MediaRecorder (older Safari)
+      blob = await recordWithMime(video, S, fps, dur, 'video/mp4');
+    } else {
+      // Last resort: WebM
+      const mime = pickWebmMime();
+      blob = await recordWithMime(video, S, fps, dur, mime);
+      showToast('Saved as WebM — MP4 not supported on this browser');
+    }
+
+    URL.revokeObjectURL(url);
+    setProgress(100, 'Done!');
+    const ext = blob.type.includes('mp4') ? 'mp4' : 'webm';
+    setTimeout(() => showResult(blob, 'video', S, ext), 350);
+
+  } catch (err) {
+    console.error(err);
+    showToast('Video processing failed. Try a shorter clip or different format.');
+    resetApp();
+  }
+}
+
+/* ── WebCodecs path: native H.264 → MP4, no WASM needed ── */
+async function encodeWithWebCodecs(video, S, fps, dur) {
+  setProgress(8, 'Loading MP4 muxer…');
+  const { Muxer, ArrayBufferTarget } = await import(
+    'https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.js'
+  );
+
+  const target = new ArrayBufferTarget();
+  const muxer  = new Muxer({ target, video: { codec: 'avc', width: S, height: S }, fastStart: 'in-memory' });
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = S;
+  canvas.height = S;
+  const ctx = canvas.getContext('2d');
+
+  let encError = null;
+  const encoder = new VideoEncoder({
+    output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+    error:  e => { encError = e; },
+  });
+  encoder.configure({ codec: 'avc1.42001f', width: S, height: S, bitrate: 8_000_000, framerate: fps });
+
+  const frameDur = 1_000_000 / fps;
+  let frameIdx   = 0;
+
+  await new Promise((resolve, reject) => {
+    video.addEventListener('error', reject, { once: true });
+    const tick = () => {
+      if (encError) { reject(encError); return; }
+      drawHologramFrame(ctx, video, S, video.videoWidth, video.videoHeight);
+      const frame = new VideoFrame(canvas, {
+        timestamp: Math.round(frameIdx * frameDur),
+        duration:  Math.round(frameDur),
+      });
+      encoder.encode(frame, { keyFrame: frameIdx % (fps * 2) === 0 });
+      frame.close();
+      frameIdx++;
+      setProgress(10 + (video.currentTime / dur) * 87, `Encoding ${toMMSS(video.currentTime)} / ${toMMSS(dur)}`);
+      if (!video.ended && !video.paused) requestAnimationFrame(tick);
+      else resolve();
+    };
+    video.play();
+    requestAnimationFrame(tick);
+    video.addEventListener('ended', resolve, { once: true });
+  });
+
+  setProgress(98, 'Finalising MP4…');
+  await encoder.flush();
+  encoder.close();
+  muxer.finalize();
+  return new Blob([target.buffer], { type: 'video/mp4' });
+}
+
+/* ── MediaRecorder path (Safari native MP4 or WebM fallback) ── */
+async function recordWithMime(video, S, fps, dur, mimeType) {
+  const canvas = document.createElement('canvas');
+  canvas.width  = S;
+  canvas.height = S;
+  const ctx = canvas.getContext('2d');
+
+  const stream   = canvas.captureStream(fps);
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8_000_000 });
+  const chunks   = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+
+  let lastT = -1;
+  const tick = () => {
+    if (!video.ended && !video.paused) {
+      if (video.currentTime !== lastT) {
+        drawHologramFrame(ctx, video, S, video.videoWidth, video.videoHeight);
+        lastT = video.currentTime;
+        setProgress(10 + (video.currentTime / dur) * 87, `Recording ${toMMSS(video.currentTime)} / ${toMMSS(dur)}`);
+      }
+      requestAnimationFrame(tick);
+    }
+  };
+
+  return new Promise(resolve => {
+    recorder.onstop = () => resolve(new Blob(chunks, { type: mimeType }));
+    recorder.start(200);
+    video.play();
+    requestAnimationFrame(tick);
+    video.addEventListener('ended', () => setTimeout(() => recorder.stop(), 200), { once: true });
+  });
+}
+
+function pickWebmMime() {
+  const candidates = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  return candidates.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+}
+
+function toMMSS(s) {
+  const m   = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+/* ──────────────────────────────────────────
+   Show result
+────────────────────────────────────────── */
+function showResult(blob, type, S, ext) {
+  const blobUrl  = URL.createObjectURL(blob);
+  const filename = `hologram_${Date.now()}.${type === 'image' ? 'png' : (ext || 'webm')}`;
+
+  previewWrap.innerHTML = '';
+
+  if (type === 'image') {
+    const img = document.createElement('img');
+    img.src       = blobUrl;
+    img.className = 'result-preview';
+    img.alt       = 'Hologram preview';
+    previewWrap.appendChild(img);
+  } else {
+    const vid = document.createElement('video');
+    vid.src       = blobUrl;
+    vid.className = 'result-preview';
+    vid.controls  = true;
+    vid.loop      = true;
+    vid.muted     = true;
+    vid.playsInline = true;
+    vid.autoplay  = true;
+    previewWrap.appendChild(vid);
+  }
+
+  const mb = (blob.size / 1_048_576).toFixed(1);
+  resultMeta.textContent = `${S} × ${S} px  ·  ${mb} MB  ·  ${type === 'image' ? 'PNG' : (ext || 'WebM').toUpperCase()}`;
+
+  downloadBtn.href     = blobUrl;
+  downloadBtn.download = filename;
+
+  setState('result');
+  setTimeout(() => stateResult.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ──────────────────────────────────────────
+   Reset
+────────────────────────────────────────── */
+function resetApp() {
+  previewWrap.innerHTML = '';
+  fileInput.value       = '';
+  videoWarn.style.display = 'none';
+  setProgress(0, 'Loading media…');
+  setState('upload');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ──────────────────────────────────────────
+   Toast
+────────────────────────────────────────── */
+function showToast(msg, ms = 3500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
+}
+</script>
+</body>
+</html>

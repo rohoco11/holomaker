@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ROHO 과학 탐험대 — Program 02: 시속 100km 람보르기니</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
+    @page { size: 60cm 180cm; margin: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #222; }
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background: #222;
+      font-family: 'Nanum Gothic', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    }
+
+    /* ══════════════════════════════════════
+       BANNER CANVAS
+    ══════════════════════════════════════ */
+    .banner {
+      width: 60cm;
+      height: 180cm;
+      overflow: hidden;
+      position: relative;
+      background: #ffffff;
+    }
+
+    /* Speed-line streaks across background */
+    .bg-speed {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          91.5deg,
+          transparent 0px, transparent 180px,
+          rgba(255,200,0,0.025) 180px, rgba(255,200,0,0.025) 181px
+        ),
+        repeating-linear-gradient(
+          91deg,
+          transparent 0px, transparent 95px,
+          rgba(255,80,0,0.015) 95px, rgba(255,80,0,0.015) 96px
+        );
+    }
+
+    /* Fire glow blobs */
+    .bb1 { width:55cm; height:55cm; top:-18cm; left:-15cm; background:radial-gradient(circle, rgba(255,100,0,0.10) 0%, transparent 65%); }
+    .bb2 { width:50cm; height:50cm; top:65cm;  right:-20cm; background:radial-gradient(circle, rgba(255,200,0,0.09) 0%, transparent 65%); }
+    .bb3 { width:55cm; height:55cm; top:125cm; left:-5cm;  background:radial-gradient(circle, rgba(255,50,0,0.10) 0%,  transparent 65%); }
+    .bb1, .bb2, .bb3 {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Stars */
+    .st { position:absolute; border-radius:50%; background:#fff; }
+
+    /* ══════════════════════════════════════
+       CHECKERED TOP STRIPE
+    ══════════════════════════════════════ */
+    .checker-stripe {
+      position: relative; z-index: 10;
+      height: 1.1cm;
+      background: repeating-linear-gradient(
+        90deg,
+        #FFE000 0px, #FFE000 1.1cm,
+        #111 1.1cm, #111 2.2cm
+      );
+    }
+
+    /* ══════════════════════════════════════
+       HEADER BAND
+    ══════════════════════════════════════ */
+    .header-band {
+      position: relative; z-index: 10;
+      padding: 1.3cm 3cm;
+      background: linear-gradient(90deg, #fff7d6 0%, #fff3c0 100%);
+      border-bottom: 0.12cm solid rgba(255,200,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .co-badge { display:flex; align-items:center; gap:0.8cm; }
+    .co-icon {
+      width:3.6cm; height:3.6cm; border-radius:0.55cm; flex-shrink:0;
+      background: linear-gradient(135deg,#FFE000,#FF6600);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2cm; box-shadow: 0 0.2cm 0.8cm rgba(255,160,0,0.6);
+    }
+    .co-label { font-size:1.1cm; color:#886600; letter-spacing:0.15cm; font-weight:700; }
+    .co-name  { font-size:1.5cm; font-weight:800; color:#222; letter-spacing:0.04cm; }
+    .prog-tag {
+      background: linear-gradient(135deg,#FF6600,#FFE000);
+      color:#000; font-size:1.1cm; font-weight:800;
+      padding:0.38cm 1cm; border-radius:2cm;
+      box-shadow:0 0.12cm 0.5cm rgba(255,150,0,0.5);
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      position: relative; z-index: 5;
+      padding: 2.2cm 3cm 1.8cm;
+      text-align: center;
+    }
+    .hero-emojis {
+      font-size: 3.2cm; line-height:1; margin-bottom:0.7cm;
+      filter: drop-shadow(0 0.2cm 0.8cm rgba(255,180,0,0.8));
+    }
+    .prog-num {
+      display:inline-block;
+      background:rgba(255,180,0,0.15); border:0.08cm solid rgba(200,130,0,0.6);
+      color:#aa6600; font-size:1cm; font-weight:800; letter-spacing:0.25cm;
+      padding:0.22cm 1.2cm; border-radius:2cm; margin-bottom:0.7cm;
+    }
+    .main-title {
+      font-size: 3.8cm; font-weight:800; color:#111; line-height:1.05;
+      text-shadow: none;
+      margin-bottom: 0.5cm;
+    }
+    .title-line {
+      width:20cm; height:0.22cm; margin:0 auto 0.8cm;
+      background: linear-gradient(90deg, transparent, #FFE000, #FF6600, #FFE000, transparent);
+      border-radius:1cm;
+    }
+    .subtitle {
+      font-size:1.4cm; color:#cc6600; font-weight:700; letter-spacing:0.03cm;
+    }
+
+    /* ══════════════════════════════════════
+       FUN FACTS STRIP
+    ══════════════════════════════════════ */
+    .funfacts {
+      position: relative; z-index:5;
+      margin: 1cm 2.5cm 0;
+      padding: 1.2cm 1.5cm;
+      background: rgba(255,255,255,0.04);
+      border: 0.08cm solid rgba(255,200,0,0.15);
+      border-radius: 0.8cm;
+    }
+    .ff-heading {
+      text-align:center; font-size:1.1cm; font-weight:800; letter-spacing:0.18cm;
+      color:#aa6600; margin-bottom:1cm;
+    }
+    .ff-cards { display:flex; gap:1cm; }
+    .ff-card {
+      flex:1; border-radius:0.65cm; padding:1cm 1.1cm;
+      display:flex; flex-direction:column; align-items:center; gap:0.45cm;
+      text-align:center;
+    }
+    .ff-card.c1 { background:linear-gradient(135deg,rgba(255,200,0,0.15),rgba(255,120,0,0.1)); border:0.07cm solid rgba(255,200,0,0.35); }
+    .ff-card.c2 { background:linear-gradient(135deg,rgba(255,80,0,0.15),rgba(200,0,0,0.1));   border:0.07cm solid rgba(255,80,0,0.35); }
+    .ff-card.c3 { background:linear-gradient(135deg,rgba(255,180,0,0.15),rgba(255,60,0,0.1)); border:0.07cm solid rgba(255,150,0,0.35); }
+    .ff-icon  { font-size:2cm; line-height:1; }
+    .ff-title { font-size:1.3cm; font-weight:800; }
+    .ff-body  { font-size:1.3cm; font-weight:400; color:#333; line-height:1.65; word-break:keep-all; }
+    .ff-card.c1 .ff-title { color:#aa6600; }
+    .ff-card.c2 .ff-title { color:#cc3300; }
+    .ff-card.c3 .ff-title { color:#cc5500; }
+
+    /* ══════════════════════════════════════
+       DIVIDER
+    ══════════════════════════════════════ */
+    .div { display:flex; align-items:center; gap:0.45cm; padding:0 3cm; margin:1.6cm 0; }
+    .div .ln { flex:1; height:0.05cm; }
+    .div .dk { width:0.38cm; height:0.38cm; border-radius:50%; }
+
+    .div-cyan  .ln { background:linear-gradient(90deg,transparent,rgba(79,195,247,0.5),transparent); }
+    .div-cyan  .dk { background:#4fc3f7; box-shadow:0 0 0.3cm #4fc3f7; }
+    .div-green .ln { background:linear-gradient(90deg,transparent,rgba(102,187,106,0.5),transparent); }
+    .div-green .dk { background:#66bb6a; box-shadow:0 0 0.3cm #66bb6a; }
+    .div-gold  .ln { background:linear-gradient(90deg,transparent,#FFE000,#FF6600,transparent); }
+    .div-gold  .dk { background:#FFE000; box-shadow:0 0 0.3cm #FFE000; }
+    .div-purple .ln { background:linear-gradient(90deg,transparent,rgba(224,64,251,0.5),transparent); }
+    .div-purple .dk { background:#e040fb; box-shadow:0 0 0.3cm #e040fb; }
+
+    /* ══════════════════════════════════════
+       CONTENT BOXES
+    ══════════════════════════════════════ */
+    .cbox { position:relative; z-index:5; margin:0 2.5cm; border-radius:0.8cm; padding:1.6cm 2.2cm; }
+    .sci  {
+      background: linear-gradient(140deg,rgba(220,240,255,0.85),rgba(200,228,252,0.85));
+      border:0.09cm solid rgba(20,100,200,0.3);
+      box-shadow:0 0.3cm 1.4cm rgba(0,0,0,0.08);
+    }
+    .act  {
+      background: linear-gradient(140deg,rgba(255,243,215,0.9),rgba(255,233,190,0.9));
+      border:0.09cm solid rgba(200,120,0,0.3);
+      box-shadow:0 0.3cm 1.4cm rgba(0,0,0,0.08);
+    }
+    .sh {
+      display:flex; align-items:center; gap:0.75cm;
+      padding-bottom:0.9cm; margin-bottom:1.1cm;
+    }
+    .sci .sh { border-bottom:0.06cm solid rgba(20,100,200,0.2); }
+    .act .sh { border-bottom:0.06cm solid rgba(200,120,0,0.2); }
+    .sh-icon { font-size:2.3cm; flex-shrink:0; line-height:1; }
+    .sh-lbl  { font-size:1.1cm; font-weight:800; letter-spacing:0.2cm; margin-bottom:0.18cm; }
+    .sh-ttl  { font-size:1.7cm; font-weight:800; color:#111; }
+    .sci .sh-lbl { color:#1565c0; }
+    .act .sh-lbl { color:#886600; }
+
+    .btext { font-size:1.3cm; line-height:1.85; color:#222; font-weight:700; word-break:keep-all; }
+    .btext em { color:#cc7700; font-style:normal; }
+
+    /* concept callouts */
+    .cbox-inner {
+      display:flex; align-items:flex-start; gap:0.55cm;
+      background:rgba(0,0,0,0.05); border-radius:0.5cm;
+      padding:0.85cm 1.1cm; margin-top:0.9cm;
+    }
+    .ci-em { font-size:1.35cm; flex-shrink:0; line-height:1.5; }
+    .ci-tx { font-size:1.3cm; line-height:1.7; color:#333; word-break:keep-all; }
+    .ci-tx strong { font-weight:800; color:#111; }
+
+    /* SVG diagram */
+    .diagram-wrap {
+      margin-top:1.1cm;
+      background:rgba(255,255,255,0.6);
+      border:0.07cm solid rgba(20,100,200,0.2);
+      border-radius:0.55cm;
+      padding:0.9cm 0.6cm 0.7cm;
+    }
+    .diagram-label {
+      text-align:center; font-size:1.1cm; font-weight:800;
+      color:#1565c0; letter-spacing:0.12cm; margin-bottom:0.6cm;
+    }
+    .diagram-wrap svg { width:100%; height:auto; display:block; }
+
+    /* activity steps */
+    .steps { display:flex; flex-direction:column; gap:1.3cm; align-items:center; }
+    .step  { display:flex; align-items:center; gap:0.8cm; width:80%; }
+    .step-num {
+      min-width:1.6cm; height:1.6cm; border-radius:50%; flex-shrink:0;
+      background: rgba(200,140,0,0.15);
+      border: 0.06cm solid rgba(180,120,0,0.4);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1cm; font-weight:800; color:#664400;
+      box-shadow: none;
+    }
+    .step-tx { font-size:1.3cm; line-height:1.75; color:#222; font-weight:700; word-break:keep-all; }
+    .step-tx em { color:#886600; font-style:normal; }
+
+    /* safety tip */
+    .safety {
+      margin-top:1cm;
+      background:rgba(255,50,0,0.12);
+      border:0.07cm solid rgba(255,100,0,0.4);
+      border-radius:0.5cm;
+      padding:0.75cm 1.1cm;
+      display:flex; align-items:center; gap:0.7cm;
+    }
+    .safety-icon { font-size:1.5cm; flex-shrink:0; }
+    .safety-tx { font-size:1.2cm; line-height:1.6; color:#993300; font-weight:700; word-break:keep-all; }
+    .safety-tx strong { color:#cc2200; }
+
+    /* ══════════════════════════════════════
+       NATURE STRIP
+    ══════════════════════════════════════ */
+    .nature-strip {
+      position:relative; z-index:5;
+      margin:0 2.5cm;
+      display:flex; gap:0.9cm;
+    }
+    .nat-card {
+      flex:1; display:flex; flex-direction:column; align-items:center;
+      gap:0.5cm; text-align:center;
+      background:rgba(255,255,255,0.04);
+      border:0.07cm solid rgba(255,200,0,0.2);
+      border-radius:0.65cm; padding:1.6cm 0.5cm;
+    }
+    .nat-circle {
+      width:4cm; height:4cm; border-radius:50%;
+      background:linear-gradient(135deg,rgba(255,200,0,0.18),rgba(255,80,0,0.12));
+      border:0.1cm solid rgba(255,200,0,0.5);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.2cm; line-height:1;
+      box-shadow:0 0 0.8cm rgba(255,180,0,0.25);
+    }
+    .nat-title { font-size:1.3cm; font-weight:800; color:#aa6600; }
+    .nat-desc  { font-size:1.2cm; color:#444; line-height:1.55; }
+
+    /* ══════════════════════════════════════
+       CHALLENGE SECTION
+    ══════════════════════════════════════ */
+    .chall {
+      position:relative; z-index:5;
+      margin:0 2.5cm;
+    }
+    .chall-head {
+      text-align:center; font-size:1.2cm; font-weight:800;
+      color:#e040fb; letter-spacing:0.1cm; margin-bottom:0.9cm;
+    }
+    .chall-cards { display:flex; gap:1cm; }
+    .chall-card {
+      flex:1; border-radius:0.65cm;
+      background:linear-gradient(140deg,rgba(240,220,255,0.85),rgba(228,205,255,0.85));
+      border:0.08cm solid rgba(150,50,200,0.3);
+      padding:1.8cm 1cm;
+      display:flex; flex-direction:column; align-items:center; gap:0.5cm;
+      text-align:center;
+    }
+    .chall-stars { font-size:1.3cm; }
+    .chall-level { font-size:1.1cm; font-weight:800; color:#7b00d4; }
+    .chall-tx    { font-size:1.3cm; font-weight:700; color:#222; line-height:1.55; word-break:keep-all; }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .footer {
+      position:relative; z-index:5;
+      padding:2cm 3cm 3cm;
+      text-align:center;
+    }
+    .foot-line {
+      height:0.08cm;
+      background:linear-gradient(90deg,transparent,#FFE000,#FF6600,transparent);
+      margin-bottom:0.8cm;
+    }
+    .foot-tag  { font-size:1.1cm; font-weight:800; color:#aa6600; margin-bottom:0.6cm; letter-spacing:0.02cm; }
+    .foot-emojis { font-size:1.5cm; letter-spacing:0.35cm; }
+
+    /* ══════════════════════════════════════
+       BOTTOM CHECKER STRIPE
+    ══════════════════════════════════════ */
+    .checker-stripe-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1.1cm;
+      background: repeating-linear-gradient(
+        90deg,
+        #FFE000 0px, #FFE000 1.1cm,
+        #111 1.1cm, #111 2.2cm
+      );
+      z-index: 20;
+    }
+  </style>
+</head>
+<body>
+<div class="banner">
+
+  <!-- BACKGROUNDS -->
+  <div class="bg-speed"></div>
+  <div class="bb1"></div>
+  <div class="bb2"></div>
+  <div class="bb3"></div>
+
+  <!-- Stars / sparks -->
+  <div class="st" style="width:0.18cm;height:0.18cm;top:5cm; left:5cm;  opacity:.7;"></div>
+  <div class="st" style="width:0.14cm;height:0.14cm;top:8cm; left:45cm; opacity:.6;"></div>
+  <div class="st" style="width:0.22cm;height:0.22cm;top:12cm;left:22cm; opacity:.5; background:#FFE000;"></div>
+  <div class="st" style="width:0.15cm;height:0.15cm;top:20cm;left:10cm; opacity:.6;"></div>
+  <div class="st" style="width:0.18cm;height:0.18cm;top:30cm;left:52cm; opacity:.5;"></div>
+  <div class="st" style="width:0.12cm;height:0.12cm;top:45cm;left:8cm;  opacity:.7; background:#FF6600;"></div>
+  <div class="st" style="width:0.20cm;height:0.20cm;top:55cm;left:35cm; opacity:.4;"></div>
+  <div class="st" style="width:0.14cm;height:0.14cm;top:70cm;left:18cm; opacity:.6;"></div>
+  <div class="st" style="width:0.18cm;height:0.18cm;top:85cm;left:50cm; opacity:.5; background:#FFE000;"></div>
+  <div class="st" style="width:0.15cm;height:0.15cm;top:100cm;left:4cm; opacity:.6;"></div>
+  <div class="st" style="width:0.22cm;height:0.22cm;top:115cm;left:28cm;opacity:.4;"></div>
+  <div class="st" style="width:0.14cm;height:0.14cm;top:130cm;left:55cm;opacity:.5;"></div>
+  <div class="st" style="width:0.18cm;height:0.18cm;top:145cm;left:12cm;opacity:.6; background:#FF6600;"></div>
+  <div class="st" style="width:0.12cm;height:0.12cm;top:160cm;left:40cm;opacity:.5;"></div>
+
+  <!-- TOP CHECKER STRIPE -->
+  <div class="checker-stripe"></div>
+
+  <!-- ════════ HEADER ════════ -->
+  <div class="header-band">
+    <div class="co-badge">
+      <div class="co-icon">🔬</div>
+      <div>
+        <div class="co-label">Science Program</div>
+        <div class="co-name">ROHO 학교로 찾아가는 과학 체험</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ HERO ════════ -->
+  <div class="hero">
+    <div class="hero-emojis">🏎️ ⚡ 🔥</div>
+    <div class="prog-num">PROGRAM 02</div>
+    <div class="main-title">시속 100km 람보르기니</div>
+    <div class="title-line"></div>
+    <div class="subtitle">엔진의 과학 — 폭발이 만드는 속도의 비밀!</div>
+  </div>
+
+  <!-- ════════ FUN FACTS ════════ -->
+  <div class="funfacts">
+    <div class="ff-heading">⚡ 깜짝 과학 사실! ⚡</div>
+    <div class="ff-cards">
+      <div class="ff-card c1">
+        <div class="ff-icon">🏎️</div>
+        <div class="ff-title">2.9초의 기적!</div>
+        <div class="ff-body">람보르기니는 단 <strong style="color:#aa6600">2.9초</strong> 만에 시속 100km에 도달해요. 눈 한 번 깜빡이면 이미 달리고 있어요!</div>
+      </div>
+      <div class="ff-card c2">
+        <div class="ff-icon">💥</div>
+        <div class="ff-title">1분에 6,000번 폭발!</div>
+        <div class="ff-body">자동차 엔진 안에서는 1분에 <strong style="color:#cc3300">6,000번</strong>이나 작은 폭발이 일어나요. 그 힘이 바퀴를 돌려요!</div>
+      </div>
+      <div class="ff-card c3">
+        <div class="ff-icon">🌡️</div>
+        <div class="ff-title">불타는 타이어!</div>
+        <div class="ff-body">F1 레이싱 타이어는 달리는 동안 <strong style="color:#cc5500">100°C 이상</strong> 달아올라요. 마찰열이 만들어 내는 힘!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ DIVIDER: CYAN ════════ -->
+  <div class="div div-cyan">
+    <div class="ln"></div>
+    <div class="dk"></div><div class="dk"></div><div class="dk"></div>
+    <div class="ln"></div>
+  </div>
+
+  <!-- ════════ SCIENCE BOX ════════ -->
+  <div class="cbox sci">
+    <div class="sh">
+      <div class="sh-icon">🔭</div>
+      <div>
+        <div class="sh-lbl">과학 원리 탐구</div>
+        <div class="sh-ttl">엔진은 어떻게 작동할까?</div>
+      </div>
+    </div>
+
+    <div class="btext">
+      자동차 엔진 속에서는 <em>폭발</em>이 일어나요! 연료(가솔린)와 공기가 섞인 뒤 불꽃이 튀면 — 펑! — 이 폭발이 <em>피스톤</em>을 아래로 밀어내요. 피스톤은 <em>크랭크축</em>을 돌리고, 그 회전력이 기어와 바퀴로 전달되어 차가 앞으로 달려요. 마치 친구를 세게 밀면 친구도 뒤로 밀리는 것처럼, 이것이 바로 <em>작용·반작용의 법칙</em>이에요!
+    </div>
+
+    <div class="cbox-inner">
+      <div class="ci-em">💥</div>
+      <div class="ci-tx"><strong>연소(燃燒) 반응:</strong> 연료 + 산소 → 폭발 → 에너지! 이 에너지가 피스톤을 밀어요. 4번의 단계(흡기 → 압축 → 폭발 → 배기)가 계속 반복돼요.</div>
+    </div>
+
+    <div class="cbox-inner">
+      <div class="ci-em">🌬️</div>
+      <div class="ci-tx"><strong>공기역학(空氣力學):</strong> 람보르기니의 날카로운 차체는 바람을 위아래로 갈라 공기 저항을 최소화해요. 빠를수록 바람을 잘 가르는 모양이 중요해요!</div>
+    </div>
+
+    <!-- SVG: 4-Stroke Engine Diagram -->
+    <div class="diagram-wrap">
+      <div class="diagram-label">🔧 4행정 엔진 사이클 (가솔린 엔진 작동 원리)</div>
+      <svg viewBox="0 0 900 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- ── Cylinder 1: 흡기 ── -->
+        <rect x="30" y="20" width="175" height="210" rx="8" fill="rgba(210,235,255,0.85)" stroke="#2060a0" stroke-width="2.5"/>
+        <!-- Valve top -->
+        <rect x="50" y="28" width="135" height="16" rx="4" fill="#5090cc" opacity="0.5"/>
+        <!-- Spark plug -->
+        <circle cx="117" cy="44" r="8" fill="#aa7700" opacity="0.7"/>
+        <!-- Gas (intake - blue arrows down) -->
+        <path d="M70 70 L70 130" stroke="#66ff99" stroke-width="3"/>
+        <polygon points="70,130 62,112 78,112" fill="#1a7a40"/>
+        <path d="M117 70 L117 130" stroke="#66ff99" stroke-width="3"/>
+        <polygon points="117,130 109,112 125,112" fill="#1a7a40"/>
+        <path d="M164 70 L164 130" stroke="#66ff99" stroke-width="3"/>
+        <polygon points="164,130 156,112 172,112" fill="#1a7a40"/>
+        <!-- Piston (low) -->
+        <rect x="48" y="165" width="139" height="35" rx="6" fill="#5090cc" opacity="0.8"/>
+        <!-- Connecting rod -->
+        <line x1="117" y1="200" x2="117" y2="228" stroke="#556677" stroke-width="5"/>
+        <!-- Crank pin -->
+        <circle cx="117" cy="232" r="10" fill="#445566"/>
+        <!-- Step label -->
+        <text x="117" y="275" font-size="27" fill="#1a7a40" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">① 흡기</text>
+        <text x="117" y="300" font-size="21" fill="#445566" font-family="Nanum Gothic,sans-serif" text-anchor="middle">연료+공기 흡입</text>
+
+        <!-- ── Arrow between 1→2 ── -->
+        <path d="M215 130 L250 130" stroke="#2060a0" stroke-width="2" stroke-dasharray="6,4"/>
+        <polygon points="250,124 262,130 250,136" fill="#5090cc"/>
+
+        <!-- ── Cylinder 2: 압축 ── -->
+        <rect x="270" y="20" width="175" height="210" rx="8" fill="rgba(210,235,255,0.85)" stroke="#2060a0" stroke-width="2.5"/>
+        <rect x="290" y="28" width="135" height="16" rx="4" fill="#5090cc" opacity="0.5"/>
+        <circle cx="357" cy="44" r="8" fill="#aa7700" opacity="0.7"/>
+        <!-- Compressed gas glow -->
+        <ellipse cx="357" cy="80" rx="55" ry="30" fill="rgba(255,200,0,0.2)" stroke="rgba(255,200,0,0.5)" stroke-width="1.5"/>
+        <text x="357" y="86" font-size="21" fill="#aa7700" font-family="sans-serif" text-anchor="middle" font-weight="800">압축!</text>
+        <!-- Piston (high - piston at top) -->
+        <rect x="288" y="115" width="139" height="35" rx="6" fill="#5090cc" opacity="0.8"/>
+        <line x1="357" y1="150" x2="357" y2="200" stroke="#556677" stroke-width="5"/>
+        <circle cx="357" cy="204" r="10" fill="#445566"/>
+        <text x="357" y="275" font-size="27" fill="#aa7700" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">② 압축</text>
+        <text x="357" y="300" font-size="21" fill="#445566" font-family="Nanum Gothic,sans-serif" text-anchor="middle">꽉 눌러 압력 UP</text>
+
+        <!-- ── Arrow between 2→3 ── -->
+        <path d="M455 130 L490 130" stroke="#FFE000" stroke-width="2" stroke-dasharray="6,4"/>
+        <polygon points="490,124 502,130 490,136" fill="#aa7700"/>
+
+        <!-- ── Cylinder 3: 폭발! (POWER) ── -->
+        <rect x="510" y="20" width="175" height="210" rx="8" fill="rgba(255,225,210,0.85)" stroke="#cc4400" stroke-width="3"/>
+        <rect x="530" y="28" width="135" height="16" rx="4" fill="#cc4400" opacity="0.7"/>
+        <circle cx="597" cy="44" r="8" fill="#fff" opacity="0.9"/>
+        <!-- Explosion shape -->
+        <polygon points="597,50 615,72 635,58 622,80 648,74 625,92 638,115 597,95 556,115 570,92 546,74 572,80 560,58 580,72" fill="#cc4400" opacity="0.85"/>
+        <circle cx="597" cy="82" r="22" fill="rgba(255,200,0,0.35)"/>
+        <!-- Piston (low - pushed down by explosion) -->
+        <rect x="528" y="162" width="139" height="35" rx="6" fill="#e06020" opacity="0.9"/>
+        <line x1="597" y1="197" x2="597" y2="228" stroke="#556677" stroke-width="5"/>
+        <circle cx="597" cy="232" r="10" fill="#cc4400"/>
+        <!-- Glow -->
+        <circle cx="597" cy="82" r="50" fill="rgba(255,100,0,0.12)"/>
+        <text x="597" y="275" font-size="27" fill="#cc4400" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">③ 폭발!</text>
+        <text x="597" y="300" font-size="21" fill="#445566" font-family="Nanum Gothic,sans-serif" text-anchor="middle">피스톤이 쭉~ 밀려요</text>
+
+        <!-- ── Arrow between 3→4 ── -->
+        <path d="M695 130 L730 130" stroke="#cc4400" stroke-width="2" stroke-dasharray="6,4"/>
+        <polygon points="730,124 742,130 730,136" fill="#cc4400"/>
+
+        <!-- ── Cylinder 4: 배기 ── -->
+        <rect x="750" y="20" width="145" height="210" rx="8" fill="rgba(210,235,255,0.85)" stroke="#2060a0" stroke-width="2.5"/>
+        <rect x="768" y="28" width="109" height="16" rx="4" fill="#5090cc" opacity="0.5"/>
+        <circle cx="822" cy="44" r="8" fill="#aa7700" opacity="0.7"/>
+        <!-- Exhaust arrows (going UP through valve) -->
+        <path d="M790 120 L790 65" stroke="#555" stroke-width="3"/>
+        <polygon points="790,65 782,83 798,83" fill="#555"/>
+        <path d="M822 120 L822 65" stroke="#555" stroke-width="3"/>
+        <polygon points="822,65 814,83 830,83" fill="#555"/>
+        <path d="M854 120 L854 65" stroke="#555" stroke-width="3"/>
+        <polygon points="854,65 846,83 862,83" fill="#555"/>
+        <!-- Smoke emoji hint -->
+        <text x="822" y="54" font-size="18" fill="#555" text-anchor="middle">💨</text>
+        <!-- Piston going up -->
+        <rect x="768" y="135" width="109" height="35" rx="6" fill="#5090cc" opacity="0.8"/>
+        <line x1="822" y1="170" x2="822" y2="210" stroke="#556677" stroke-width="5"/>
+        <circle cx="822" cy="214" r="10" fill="#445566"/>
+        <text x="822" y="275" font-size="27" fill="#445566" font-family="Nanum Gothic,sans-serif" font-weight="800" text-anchor="middle">④ 배기</text>
+        <text x="822" y="300" font-size="21" fill="#445566" font-family="Nanum Gothic,sans-serif" text-anchor="middle">연소 가스 배출</text>
+
+        <!-- Crankshaft line at bottom -->
+        <line x1="30" y1="336" x2="895" y2="336" stroke="#334" stroke-width="2" stroke-dasharray="8,5"/>
+        <text x="450" y="330" font-size="20" fill="#556677" font-family="Nanum Gothic,sans-serif" text-anchor="middle">← 크랭크축 — 왕복 운동을 회전 운동으로 변환 →</text>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- ════════ DIVIDER: GREEN ════════ -->
+  <div class="div div-green">
+    <div class="ln"></div>
+    <div class="dk"></div><div class="dk"></div><div class="dk"></div>
+    <div class="ln"></div>
+  </div>
+
+  <!-- ════════ NATURE STRIP ════════ -->
+  <div class="nature-strip">
+    <div class="nat-card">
+      <div class="nat-circle">🏎️</div>
+      <div class="nat-title">F1 레이싱카</div>
+      <div class="nat-desc">시속 350km<br>초고회전 엔진</div>
+    </div>
+    <div class="nat-card">
+      <div class="nat-circle">🚀</div>
+      <div class="nat-title">로켓</div>
+      <div class="nat-desc">연소가<br>추진력을 만들어요</div>
+    </div>
+    <div class="nat-card">
+      <div class="nat-circle">🚄</div>
+      <div class="nat-title">고속열차 KTX</div>
+      <div class="nat-desc">시속 300km<br>전기 모터 구동</div>
+    </div>
+    <div class="nat-card">
+      <div class="nat-circle">✈️</div>
+      <div class="nat-title">제트 전투기</div>
+      <div class="nat-desc">시속 2,000km<br>엔진의 끝판왕!</div>
+    </div>
+  </div>
+
+  <!-- ════════ DIVIDER: GOLD ════════ -->
+  <div class="div div-gold">
+    <div class="ln"></div>
+    <div class="dk"></div><div class="dk"></div><div class="dk"></div>
+    <div class="ln"></div>
+  </div>
+
+  <!-- ════════ ACTIVITY BOX ════════ -->
+  <div class="cbox act">
+    <div class="sh">
+      <div class="sh-icon">🏁</div>
+      <div>
+        <div class="sh-lbl">오늘의 활동</div>
+        <div class="sh-ttl">RC카 레이싱 도전!</div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-tx">RC카와 조종기를 받아요. <em>조종기 버튼</em>이 어떻게 생겼는지 살펴봐요!</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-tx"><em>전원 스위치</em>를 켜고, RC카를 바닥에 내려놓아요.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-tx">레버를 <em>살살</em> 눌러 천천히 출발하고, 좌우 방향도 조종해봐요!</div>
+      </div>
+    </div>
+
+    <div class="safety">
+      <div class="safety-icon">⚠️</div>
+      <div class="safety-tx"><strong>안전 주의!</strong> RC카가 달릴 때 손이나 발을 바퀴 앞에 놓지 마세요. 친구를 향해 조종하지 않아요. 선생님 신호에 맞춰 출발!</div>
+    </div>
+
+  </div>
+
+
+  <!-- ════════ FOOTER ════════ -->
+  <div class="footer">
+    <div class="foot-line"></div>
+    <div class="foot-tag">💡 과학은 곧 속도다! ROHO와 함께 미래 레이서가 되어보세요!</div>
+    <div class="foot-emojis">🏎️ ⚡ 🔥 🏁 🚀</div>
+  </div>
+
+  <!-- BOTTOM CHECKER STRIPE -->
+  <div class="checker-stripe-bottom"></div>
+
+</div><!-- /banner -->
+</body>
+</html>

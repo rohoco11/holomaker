@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ROHO 학교로 찾아가는 과학 체험 — Program 03: 비눗방울 돔 안의 나의 모습</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
+    @page { size: 60cm 180cm; margin: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #ccc; }
+
+    @media print {
+      html, body { background: white; padding: 0; margin: 0; display: block; }
+      .banner { box-shadow: none; }
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background: #ccc;
+      font-family: 'Nanum Gothic', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    }
+
+    /* ══════════════════════════════════════
+       BANNER CANVAS
+    ══════════════════════════════════════ */
+    .banner {
+      width: 60cm;
+      height: 180cm;
+      overflow: hidden;
+      position: relative;
+      background: #ffffff;
+    }
+
+    /* Dreamy radial glow blobs */
+    .bg-dream {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 40% 25% at 15% 12%, rgba(200,150,255,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 35% 20% at 85% 30%, rgba(100,200,255,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 20% at 50% 55%, rgba(255,150,220,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 20% at 20% 75%, rgba(150,220,255,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 20% at 80% 88%, rgba(200,140,255,0.08) 0%, transparent 55%);
+    }
+
+    /* Subtle floating bubble circles */
+    .bubble-deco {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid;
+      pointer-events: none;
+    }
+    .bd1  { width:3.5cm; height:3.5cm; top:14cm;  left:1.2cm;  border-color:rgba(150,80,255,0.12); }
+    .bd2  { width:2cm;   height:2cm;   top:22cm;  right:1.5cm; border-color:rgba(80,180,255,0.15); }
+    .bd3  { width:5cm;   height:5cm;   top:38cm;  right:0.5cm; border-color:rgba(255,120,200,0.10); }
+    .bd4  { width:1.8cm; height:1.8cm; top:50cm;  left:0.8cm;  border-color:rgba(100,220,200,0.13); }
+    .bd5  { width:4cm;   height:4cm;   top:70cm;  left:0.3cm;  border-color:rgba(180,100,255,0.09); }
+    .bd6  { width:2.5cm; height:2.5cm; top:85cm;  right:1cm;   border-color:rgba(80,160,255,0.12); }
+    .bd7  { width:3cm;   height:3cm;   top:105cm; left:1.5cm;  border-color:rgba(255,130,210,0.10); }
+    .bd8  { width:1.5cm; height:1.5cm; top:125cm; right:2cm;   border-color:rgba(140,80,255,0.14); }
+    .bd9  { width:3.8cm; height:3.8cm; top:145cm; right:0.8cm; border-color:rgba(80,200,255,0.10); }
+    .bd10 { width:2.2cm; height:2.2cm; top:160cm; left:1cm;    border-color:rgba(255,150,220,0.12); }
+
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    .header {
+      position: relative;
+      background: linear-gradient(135deg, #f0e8ff 0%, #e8f4ff 45%, #ffe8f8 100%);
+      padding: 1.3cm 2.5cm;
+      text-align: center;
+      border-bottom: 3px solid rgba(140,80,255,0.25);
+    }
+    .header-icon { font-size: 1.6cm; display: block; margin-bottom: 0.3cm; }
+    .header-company {
+      font-size: 1.1cm;
+      font-weight: 800;
+      color: #4a00a0;
+      letter-spacing: 0.04cm;
+    }
+    .program-tag {
+      display: inline-block;
+      margin-top: 0.4cm;
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6, #06b6d4);
+      color: white;
+      font-size: 0.9cm;
+      font-weight: 700;
+      padding: 0.2cm 0.9cm;
+      border-radius: 2cm;
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      position: relative;
+      background: linear-gradient(160deg, #f5eeff 0%, #eaf5ff 35%, #fff0fb 70%, #edfff8 100%);
+      padding: 3.5cm 2.5cm;
+      text-align: center;
+    }
+    .hero-emoji-row {
+      display: block;
+      font-size: 2.2cm;
+      letter-spacing: 0.4cm;
+      margin-bottom: 0.6cm;
+    }
+    .program-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #7c3aed, #2563eb, #0891b2);
+      color: white;
+      font-size: 0.95cm;
+      font-weight: 800;
+      padding: 0.25cm 1.1cm;
+      border-radius: 2cm;
+      letter-spacing: 0.12cm;
+      margin-bottom: 0.55cm;
+    }
+    .hero-title {
+      font-size: 3.8cm;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.5cm;
+      background: linear-gradient(135deg, #4a00a0, #7c3aed, #0891b2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: 1.55cm;
+      font-weight: 700;
+      color: #5b21b6;
+      margin-bottom: 1cm;
+    }
+    .hero-deco {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3cm;
+    }
+    .hero-deco .deco-line {
+      flex: 1;
+      max-width: 6.5cm;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+    }
+    .hero-deco .deco-icons { font-size: 1.1cm; letter-spacing: 0.15cm; }
+
+    /* ══════════════════════════════════════
+       FUN FACTS
+    ══════════════════════════════════════ */
+    .fun-facts-section {
+      padding: 3cm 2.5cm;
+      background: #fff;
+      position: relative;
+    }
+    .section-title {
+      font-size: 1.9cm;
+      font-weight: 800;
+      color: #3b0080;
+      text-align: center;
+      margin-bottom: 1cm;
+    }
+    .fun-facts-grid {
+      display: flex;
+      gap: 0.6cm;
+    }
+    .fun-fact-card {
+      flex: 1;
+      border-radius: 0.45cm;
+      padding: 1cm 1cm;
+      border: 2px solid;
+    }
+    .ffc-purple { background: rgba(233,213,255,0.55); border-color: #7c3aed; }
+    .ffc-blue   { background: rgba(206,232,255,0.55); border-color: #2563eb; }
+    .ffc-pink   { background: rgba(255,209,240,0.55); border-color: #db2777; }
+    .fact-icon  { font-size: 1.5cm; margin-bottom: 0.35cm; }
+    .fact-title {
+      font-size: 1.2cm;
+      font-weight: 800;
+      color: #3b0080;
+      margin-bottom: 0.3cm;
+    }
+    .fact-body {
+      font-size: 1.15cm;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════
+       DIVIDERS
+    ══════════════════════════════════════ */
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35cm;
+      margin: 3cm 2.5cm;
+    }
+    .divider .dot {
+      width: 0.45cm;
+      height: 0.45cm;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .divider .dline {
+      flex: 1;
+      height: 2px;
+    }
+    /* purple */
+    .dv-purple .dot  { background: #7c3aed; }
+    .dv-purple .dline { background: linear-gradient(90deg, transparent, #7c3aed, transparent); }
+    /* teal */
+    .dv-teal .dot    { background: #0891b2; }
+    .dv-teal .dline  { background: linear-gradient(90deg, transparent, #0891b2, transparent); }
+    /* pink */
+    .dv-pink .dot    { background: #db2777; }
+    .dv-pink .dline  { background: linear-gradient(90deg, transparent, #db2777, transparent); }
+    /* blue */
+    .dv-blue .dot    { background: #2563eb; }
+    .dv-blue .dline  { background: linear-gradient(90deg, transparent, #2563eb, transparent); }
+
+    /* ══════════════════════════════════════
+       SCIENCE BOX
+    ══════════════════════════════════════ */
+    .science-box {
+      margin: 0 2.5cm;
+      background: rgba(233,213,255,0.45);
+      border: 2px solid #7c3aed;
+      border-radius: 0.6cm;
+      padding: 2.5cm 2.2cm;
+      position: relative;
+    }
+    .science-box-title {
+      font-size: 1.9cm;
+      font-weight: 800;
+      color: #4a00a0;
+      text-align: center;
+      margin-bottom: 0.8cm;
+    }
+    .science-body {
+      font-size: 1.3cm;
+      color: #1a1a2e;
+      line-height: 1.75;
+      margin-bottom: 1cm;
+    }
+    .concept-callouts {
+      display: flex;
+      gap: 0.6cm;
+      margin-bottom: 1cm;
+    }
+    .callout {
+      flex: 1;
+      border: 2px solid;
+      border-radius: 0.4cm;
+      padding: 0.8cm 1cm;
+      text-align: center;
+    }
+    .co-purple { background: rgba(196,167,255,0.30); border-color: #6d28d9; }
+    .co-teal   { background: rgba(153,220,240,0.28); border-color: #0e7490; }
+    .callout-title {
+      font-size: 1.4cm;
+      font-weight: 800;
+      color: #3b0080;
+      margin-bottom: 0.3cm;
+    }
+    .callout-body {
+      font-size: 1.15cm;
+      color: #333;
+      line-height: 1.55;
+    }
+    .science-svg-wrap {
+      margin: 1cm 0;
+      text-align: center;
+    }
+    .science-svg-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ══════════════════════════════════════
+       NATURE STRIP
+    ══════════════════════════════════════ */
+    .nature-strip {
+      padding: 3cm 2.5cm;
+      background: #fff;
+      position: relative;
+    }
+    .nature-grid {
+      display: flex;
+      gap: 0.65cm;
+      margin-top: 1cm;
+    }
+    .nature-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(160deg, rgba(233,213,255,0.45), rgba(206,232,255,0.45));
+      border: 2px solid rgba(124,58,237,0.28);
+      border-radius: 0.5cm;
+      padding: 1cm 0.7cm 0.9cm;
+    }
+    .nature-emoji { font-size: 2.1cm; }
+    .nature-title {
+      font-size: 1.2cm;
+      font-weight: 800;
+      color: #3b0080;
+      margin-top: 0.4cm;
+      text-align: center;
+    }
+    .nature-desc {
+      font-size: 1.05cm;
+      color: #444;
+      text-align: center;
+      margin-top: 0.2cm;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════
+       ACTIVITY BOX
+    ══════════════════════════════════════ */
+    .activity-box {
+      margin: 0 2.5cm;
+      background: rgba(255,240,210,0.70);
+      border: 2px solid #d97706;
+      border-radius: 0.6cm;
+      padding: 2.5cm 2.2cm;
+    }
+    .activity-box-title {
+      font-size: 1.9cm;
+      font-weight: 800;
+      color: #92400e;
+      text-align: center;
+      margin-bottom: 1cm;
+    }
+    .activity-steps {
+      width: 88%;
+      margin: 0 auto;
+    }
+    .activity-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6cm;
+      margin-bottom: 0.85cm;
+    }
+    .step-num {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      color: #fff;
+      font-size: 1.3cm;
+      font-weight: 800;
+      min-width: 1.7cm;
+      height: 1.7cm;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text {
+      font-size: 1.3cm;
+      color: #1c1c1c;
+      line-height: 1.65;
+      padding-top: 0.1cm;
+    }
+    .safety-tip {
+      background: rgba(255,215,153,0.50);
+      border: 2px solid #d97706;
+      border-radius: 0.4cm;
+      padding: 0.65cm 1cm;
+      font-size: 1.15cm;
+      font-weight: 700;
+      color: #92400e;
+      text-align: center;
+      margin-top: 0.85cm;
+    }
+    .materials-row {
+      margin-top: 0.8cm;
+      font-size: 1.15cm;
+      color: #92400e;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .materials-row strong { font-weight: 800; }
+
+    /* ══════════════════════════════════════
+       CHALLENGE
+    ══════════════════════════════════════ */
+    .challenge-section {
+      padding: 3cm 2.5cm;
+      background: #fff;
+      position: relative;
+    }
+    .challenge-title {
+      font-size: 1.9cm;
+      font-weight: 800;
+      color: #3b0080;
+      text-align: center;
+      margin-bottom: 1cm;
+    }
+    .challenge-cards {
+      display: flex;
+      gap: 0.65cm;
+    }
+    .challenge-card {
+      flex: 1;
+      border: 2px solid;
+      border-radius: 0.5cm;
+      padding: 1.1cm 1cm;
+      text-align: center;
+    }
+    .cc-easy   { background: rgba(206,232,255,0.65); border-color: #2563eb; }
+    .cc-medium { background: rgba(233,213,255,0.65); border-color: #7c3aed; }
+    .cc-hard   { background: rgba(255,209,240,0.65); border-color: #db2777; }
+    .challenge-stars { font-size: 1.3cm; margin-bottom: 0.35cm; }
+    .challenge-name {
+      font-size: 1.3cm;
+      font-weight: 800;
+      color: #3b0080;
+      margin-bottom: 0.3cm;
+    }
+    .challenge-desc {
+      font-size: 1.2cm;
+      color: #333;
+      line-height: 1.55;
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .footer {
+      padding: 2cm 2.5cm 2.5cm;
+      text-align: center;
+      background: #fff;
+      position: relative;
+    }
+    .footer-line {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #8b5cf6, #3b82f6, #06b6d4, #db2777, transparent);
+      margin-bottom: 1cm;
+      border-radius: 2px;
+    }
+    .footer-tagline {
+      font-size: 1.3cm;
+      font-weight: 700;
+      color: #4a00a0;
+      margin-bottom: 0.6cm;
+    }
+    .footer-emoji { font-size: 1.5cm; letter-spacing: 0.4cm; }
+
+    /* keyword pills (science box) */
+    .keyword-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4cm;
+      margin-top: 1cm;
+      justify-content: center;
+    }
+    .keyword-pill {
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      color: #fff;
+      font-size: 1.05cm;
+      font-weight: 700;
+      padding: 0.28cm 0.75cm;
+      border-radius: 2cm;
+    }
+  </style>
+</head>
+<body>
+<div class="banner">
+
+  <!-- dreamy background -->
+  <div class="bg-dream"></div>
+
+  <!-- floating bubble decorations -->
+  <div class="bubble-deco bd1"></div>
+  <div class="bubble-deco bd2"></div>
+  <div class="bubble-deco bd3"></div>
+  <div class="bubble-deco bd4"></div>
+  <div class="bubble-deco bd5"></div>
+  <div class="bubble-deco bd6"></div>
+  <div class="bubble-deco bd7"></div>
+  <div class="bubble-deco bd8"></div>
+  <div class="bubble-deco bd9"></div>
+  <div class="bubble-deco bd10"></div>
+
+  <!-- ══ HEADER ══ -->
+  <div class="header">
+    <span class="header-icon">🫧</span>
+    <div class="header-company">ROHO 학교로 찾아가는 과학 체험</div>
+    <div class="program-tag">✨ PROGRAM 03 · 비눗방울 과학 ✨</div>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <div class="hero">
+    <span class="hero-emoji-row">🫧 🌈 🫧</span>
+    <div class="program-badge">PROGRAM 03</div>
+    <div class="hero-title">비눗방울 돔<br>안의 나의 모습</div>
+    <div class="hero-subtitle">나보다 큰 비눗방울 속으로 들어가 볼까요?</div>
+    <div class="hero-deco">
+      <div class="deco-line"></div>
+      <div class="deco-icons">🌈 🫧 ✨ 🫧 🌈</div>
+      <div class="deco-line"></div>
+    </div>
+  </div>
+
+  <!-- ══ FUN FACTS ══ -->
+  <div class="fun-facts-section">
+    <div class="section-title">💡 신기한 비눗방울 이야기</div>
+    <div class="fun-facts-grid">
+      <div class="fun-fact-card ffc-purple">
+        <div class="fact-icon">🔵</div>
+        <div class="fact-title">왜 항상 동그랄까요?</div>
+        <div class="fact-body">비눗방울은 <strong>표면장력</strong> 때문에 항상 공 모양이 돼요! 같은 부피일 때 공 모양이 가장 작은 표면을 만들거든요.</div>
+      </div>
+      <div class="fun-fact-card ffc-blue">
+        <div class="fact-icon">🌈</div>
+        <div class="fact-title">무지개빛의 비밀</div>
+        <div class="fact-body">비눗방울이 무지개색으로 반짝이는 건 <strong>빛의 간섭</strong> 때문이에요! 얇은 막 양면에서 반사된 빛이 만나 색깔이 나타나요.</div>
+      </div>
+      <div class="fun-fact-card ffc-pink">
+        <div class="fact-icon">🏆</div>
+        <div class="fact-title">세계 최대 비눗방울</div>
+        <div class="fact-body">비눗방울 전문가들은 지름이 <strong>3미터가 넘는</strong> 거대 비눗방울을 만들 수 있어요! 오늘 우리도 그 안에 들어가 볼 거예요!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider dv-purple">
+    <div class="dot"></div><div class="dline"></div>
+    <div class="dot"></div><div class="dot"></div>
+    <div class="dline"></div><div class="dot"></div>
+  </div>
+
+  <!-- ══ SCIENCE BOX ══ -->
+  <div class="science-box">
+    <div class="science-box-title">🔬 비눗방울의 과학 원리</div>
+    <div class="science-body">
+      비눗방울은 <strong>물 분자층이 비누 분자막 두 겹 사이에 끼인 얇은 막</strong>으로 만들어져요.
+      물 분자들은 서로 잡아당기는 <strong>표면장력</strong> 덕분에 막을 유지하고, 비누는 이 막을 훨씬 유연하고 튼튼하게 만들어 줘요.
+      빛이 이 얇은 막에 닿으면 바깥쪽과 안쪽에서 각각 반사되고, 두 반사광이 만나면서 <strong>아름다운 무지개색</strong>이 나타나요!
+    </div>
+
+    <div class="concept-callouts">
+      <div class="callout co-purple">
+        <div class="callout-title">표면장력</div>
+        <div class="callout-body">물 분자들이 서로 잡아당겨 표면을 최대한 작게 만들려는 힘이에요. 비눗방울이 동그란 이유!</div>
+      </div>
+      <div class="callout co-teal">
+        <div class="callout-title">빛의 간섭</div>
+        <div class="callout-body">얇은 막의 두 면에서 반사된 빛이 만나 특정 색을 강하게 만들어요. 무지개빛의 비밀!</div>
+      </div>
+    </div>
+
+    <!-- SVG Diagram -->
+    <div class="science-svg-wrap">
+      <svg viewBox="0 0 900 310" xmlns="http://www.w3.org/2000/svg"
+           font-family="'Nanum Gothic','Malgun Gothic',sans-serif">
+        <defs>
+          <marker id="arr-gold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arr-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#ea580c"/>
+          </marker>
+          <marker id="arr-pink" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#db2777"/>
+          </marker>
+        </defs>
+
+        <!-- background -->
+        <rect width="900" height="310" rx="18" fill="rgba(237,220,255,0.35)"/>
+
+        <!-- ── LEFT: Soap film cross-section ── -->
+        <text x="215" y="28" text-anchor="middle" font-size="19" font-weight="800" fill="#4a00a0">비눗막 단면도</text>
+
+        <!-- outer soap layer -->
+        <rect x="65" y="55" width="22" height="210" rx="6" fill="#7c3aed" opacity="0.85"/>
+        <!-- water layer -->
+        <rect x="87" y="55" width="256" height="210" fill="rgba(96,165,250,0.22)"/>
+        <!-- water molecule dots (H₂O) -->
+        <circle cx="120" cy="100" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="168" cy="118" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="216" cy="97"  r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="264" cy="113" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="312" cy="101" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="120" cy="158" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="168" cy="175" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="216" cy="152" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="264" cy="170" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="312" cy="159" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="120" cy="215" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="168" cy="228" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="216" cy="208" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="264" cy="222" r="11" fill="#3b82f6" opacity="0.75"/>
+        <circle cx="312" cy="213" r="11" fill="#3b82f6" opacity="0.75"/>
+        <!-- inner soap layer -->
+        <rect x="343" y="55" width="22" height="210" rx="6" fill="#7c3aed" opacity="0.85"/>
+
+        <!-- arrow showing water molecules attract -->
+        <text x="216" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#4a00a0">← 물 분자들이 서로 당겨요 →</text>
+
+        <!-- labels below -->
+        <text x="76"  y="284" text-anchor="middle" font-size="14" font-weight="800" fill="#6d28d9">비누막</text>
+        <text x="216" y="284" text-anchor="middle" font-size="14" font-weight="800" fill="#1d4ed8">물 분자층</text>
+        <text x="354" y="284" text-anchor="middle" font-size="14" font-weight="800" fill="#6d28d9">비누막</text>
+
+        <!-- center divider -->
+        <line x1="450" y1="30" x2="450" y2="285" stroke="rgba(124,58,237,0.2)" stroke-width="2" stroke-dasharray="6,4"/>
+
+        <!-- ── RIGHT: Light interference ── -->
+        <text x="680" y="28" text-anchor="middle" font-size="19" font-weight="800" fill="#4a00a0">빛의 간섭</text>
+
+        <!-- bubble arc (thin film) -->
+        <path d="M 500,285 Q 680,30 860,285" stroke="#8b5cf6" stroke-width="14" fill="none" opacity="0.40"/>
+        <path d="M 515,285 Q 680,55 845,285" stroke="#06b6d4" stroke-width="6"  fill="none" opacity="0.30"/>
+
+        <!-- incoming sunlight ray -->
+        <line x1="575" y1="55" x2="618" y2="132" stroke="#ca8a04" stroke-width="3.5" marker-end="url(#arr-gold)"/>
+        <!-- reflected ray from outer surface -->
+        <line x1="618" y1="132" x2="570" y2="205" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>
+        <!-- reflected ray from inner surface -->
+        <line x1="632" y1="143" x2="584" y2="218" stroke="#db2777" stroke-width="3" marker-end="url(#arr-pink)"/>
+
+        <!-- labels -->
+        <text x="548" y="50"  font-size="13" font-weight="700" fill="#92400e">햇빛</text>
+        <text x="520" y="210" font-size="13" font-weight="700" fill="#c2410c">반사 1</text>
+        <text x="519" y="228" font-size="13" font-weight="700" fill="#9d174d">반사 2</text>
+
+        <!-- result -->
+        <text x="730" y="140" text-anchor="middle" font-size="15" font-weight="800" fill="#3b0080">두 빛이 만나</text>
+        <text x="730" y="162" text-anchor="middle" font-size="15" font-weight="800" fill="#3b0080">무지개색 탄생!</text>
+        <text x="730" y="192" text-anchor="middle" font-size="26">🌈</text>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider dv-pink">
+    <div class="dot"></div><div class="dline"></div>
+    <div class="dot"></div><div class="dot"></div>
+    <div class="dline"></div><div class="dot"></div>
+  </div>
+
+  <!-- ══ ACTIVITY BOX ══ -->
+  <div class="activity-box">
+    <div class="activity-box-title">🫧 활동: 거대 비눗방울 돔 체험!</div>
+    <div class="activity-steps">
+      <div class="activity-step">
+        <div class="step-num">1</div>
+        <div class="step-text">선생님이 준비한 <strong>마법의 비눗물</strong>을 살펴봐요. 글리세린이 들어가서 훨씬 튼튼하고 오래가는 방울이 만들어진답니다!</div>
+      </div>
+      <div class="activity-step">
+        <div class="step-num">2</div>
+        <div class="step-text">큰 훌라후프 링을 비눗물 통에 담갔다가 <strong>천천히</strong> 들어올려요. 얇은 비눗막이 생기는 걸 눈으로 확인해요!</div>
+      </div>
+      <div class="activity-step">
+        <div class="step-num">3</div>
+        <div class="step-text">링 안으로 <strong>살금살금</strong> 들어가요. 링을 몸 위로 천천히 올리면… 🫧 <strong>내가 비눗방울 돔 안에 쏙!</strong></div>
+      </div>
+    </div>
+    <div class="safety-tip">⚠️ 안전 주의: 비눗물이 눈에 들어가지 않게 조심해요! 바닥이 미끄러울 수 있으니 천천히 움직여요!</div>
+    <div class="materials-row">🫧 <strong>준비물:</strong> 비눗물 통 · 훌라후프 링 · 글리세린 · 주방세제 · 물</div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider dv-blue">
+    <div class="dot"></div><div class="dline"></div>
+    <div class="dot"></div><div class="dot"></div>
+    <div class="dline"></div><div class="dot"></div>
+  </div>
+
+  <!-- ══ CHALLENGE ══ -->
+  <div class="challenge-section">
+    <div class="challenge-title">🏆 도전! 비눗방울 마스터</div>
+    <div class="challenge-cards">
+      <div class="challenge-card cc-easy">
+        <div class="challenge-stars">⭐</div>
+        <div class="challenge-name">방울 띄우기</div>
+        <div class="challenge-desc">작은 비눗방울을 만들어 5초 이상 공중에 유지해봐요!</div>
+      </div>
+      <div class="challenge-card cc-medium">
+        <div class="challenge-stars">⭐⭐</div>
+        <div class="challenge-name">방울 속 방울</div>
+        <div class="challenge-desc">큰 비눗방울 안에 작은 방울을 하나 더 만들어봐요!</div>
+      </div>
+      <div class="challenge-card cc-hard">
+        <div class="challenge-stars">⭐⭐⭐</div>
+        <div class="challenge-name">돔 안에서 3초!</div>
+        <div class="challenge-desc">비눗방울 돔 안에 들어가 방울이 터지지 않게 3초 버텨봐요!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <div class="footer">
+    <div class="footer-line"></div>
+    <div class="footer-tagline">✨ 과학은 우리 주변 어디에나 있어요! 오늘도 신기한 세상을 발견했나요? ✨</div>
+    <div class="footer-emoji">🫧 🌈 🔬 🌟 🫧</div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로호사이언스 — 과학교육 전문기업</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07090f;
+      --bg-2:      #0d1120;
+      --bg-3:      #131928;
+      --border:    rgba(255,255,255,0.07);
+      --text:      #f0f2f8;
+      --muted:     #6b7494;
+      --accent:    #00e5a0;
+      --accent-dim:#00b87e;
+      --accent-glow: rgba(0,229,160,0.15);
+      --red:       #ff4d6d;
+      --gold:      #f5c842;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── Utility ── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+    .label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 3px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+    .btn-primary:hover { background: #fff; transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(7, 9, 15, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 18px; height: 18px; }
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--text);
+    }
+    .logo-text span { color: var(--accent); }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex: 1;
+    }
+    nav::-webkit-scrollbar { display: none; }
+
+    nav a {
+      white-space: nowrap;
+      text-decoration: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 0.4rem 0.75rem;
+      border-radius: 2px;
+      transition: color 0.15s, background 0.15s;
+    }
+    nav a:hover { color: var(--text); background: var(--border); }
+    nav a.active { color: var(--accent); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+    .header-actions a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.8rem;
+      transition: color 0.15s;
+    }
+    .header-actions a:hover { color: var(--accent); }
+
+    .cart-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .cart-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding-top: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 70% 50%, rgba(0,229,160,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,100,255,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* grid lines */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 80% at 60% 50%, black 0%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 80% at 60% 50%, black 0%, transparent 80%);
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .hero-content {
+      padding: 4rem 2rem 4rem clamp(1.5rem, 5vw, 5rem);
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 32px; height: 2px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title .accent { color: var(--accent); display: block; }
+    .hero-title .ko {
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      font-family: 'Noto Sans KR', sans-serif;
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    .hero-desc {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 420px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 500px;
+    }
+
+    .hero-card-stack {
+      position: relative;
+      width: 340px;
+      height: 420px;
+    }
+
+    .hero-card {
+      position: absolute;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.4s ease;
+    }
+
+    .hero-card:nth-child(1) {
+      width: 260px; height: 300px;
+      top: 60px; left: 0;
+      transform: rotate(-4deg);
+      z-index: 1;
+      animation: floatA 6s ease-in-out infinite;
+    }
+    .hero-card:nth-child(2) {
+      width: 240px; height: 280px;
+      top: 30px; right: 0;
+      transform: rotate(3deg);
+      z-index: 2;
+      animation: floatB 7s ease-in-out infinite;
+    }
+    .hero-card:nth-child(3) {
+      width: 280px; height: 220px;
+      bottom: 0; left: 30px;
+      transform: rotate(-1deg);
+      z-index: 3;
+      animation: floatC 5s ease-in-out infinite;
+    }
+
+    .hero-card-img {
+      width: 100%;
+      height: 65%;
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+    }
+    .hero-card-body {
+      padding: 0.875rem;
+    }
+    .hero-card-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: 'Barlow Condensed', sans-serif;
+      margin-bottom: 0.25rem;
+    }
+    .hero-card-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+    }
+    .hero-card-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── CATEGORIES ── */
+    .categories {
+      padding: 6rem 0;
+      background: var(--bg-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .cat-card {
+      background: var(--bg-2);
+      padding: 2rem 1.75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .cat-card:hover { background: var(--bg-3); }
+    .cat-card:hover::after { width: 100%; }
+
+    .cat-icon {
+      width: 44px; height: 44px;
+      background: var(--bg-3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .cat-card:hover .cat-icon { background: var(--accent-glow); }
+
+    .cat-info {}
+    .cat-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .cat-en {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .cat-arrow {
+      position: absolute;
+      right: 1.25rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .cat-card:hover .cat-arrow { color: var(--accent); transform: translateY(-50%) translateX(3px); }
+
+    /* ── BEST PRODUCTS ── */
+    .products {
+      padding: 6rem 0;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+
+    .product-card {
+      background: var(--bg);
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .product-card:hover { background: var(--bg-2); }
+
+    .product-badge {
+      position: absolute;
+      top: 0.75rem; left: 0.75rem;
+      z-index: 2;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+    }
+    .badge-best { background: var(--accent); color: #000; }
+    .badge-new  { background: var(--gold); color: #000; }
+    .badge-sale { background: var(--red); color: #fff; }
+
+    .product-img {
+      aspect-ratio: 1;
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .product-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .product-card:hover .product-overlay { opacity: 1; }
+
+    .overlay-btn {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      color: white;
+    }
+    .overlay-btn:hover { background: var(--accent); border-color: var(--accent); color: #000; }
+
+    .product-info {
+      padding: 1rem;
+    }
+    .product-cat {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      margin-bottom: 0.3rem;
+    }
+    .product-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 0.6rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .product-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .product-price .won { font-size: 0.75rem; font-weight: 400; color: var(--muted); }
+
+    .products-footer {
+      margin-top: 2.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── PROGRAMS ── */
+    .programs {
+      padding: 6rem 0;
+      background: var(--bg-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .programs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .program-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      cursor: pointer;
+      transition: border-color 0.25s;
+    }
+    .program-card:hover { border-color: var(--accent); }
+
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .program-card:hover::before { transform: scaleX(1); }
+
+    .program-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 5rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--border);
+      position: absolute;
+      right: 2rem; top: 1.5rem;
+      transition: color 0.25s;
+    }
+    .program-card:hover .program-num { color: var(--accent-glow); }
+
+    .program-icon { font-size: 2rem; }
+    .program-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .program-title-ko {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .program-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 340px;
+    }
+    .program-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      margin-top: auto;
+    }
+    .program-link:hover { gap: 0.7rem; }
+
+    /* ── HOLOGRAM CTA ── */
+    .hologram-cta {
+      padding: 6rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hologram-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,229,160,0.07) 0%, transparent 70%);
+    }
+
+    .hologram-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 3rem;
+      padding: 4rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--bg-2) 0%, rgba(0,229,160,0.03) 100%);
+      position: relative;
+    }
+
+    .hologram-glow {
+      position: absolute;
+      right: -60px; top: 50%;
+      transform: translateY(-50%);
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,229,160,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hologram-label { margin-bottom: 1rem; }
+    .hologram-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .hologram-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 2rem;
+    }
+
+    .hologram-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 160px; height: 160px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .pyramid {
+      width: 80px; height: 80px;
+      position: relative;
+      animation: spin 10s linear infinite;
+    }
+    .pyramid::before, .pyramid::after {
+      content: '';
+      position: absolute;
+      border: 40px solid transparent;
+    }
+    .pyramid::before {
+      border-bottom: 80px solid var(--accent);
+      top: -80px; left: 0;
+      opacity: 0.7;
+    }
+    .pyramid::after {
+      border-top: 80px solid var(--accent-dim);
+      bottom: -80px; left: 0;
+      opacity: 0.4;
+    }
+
+    .hologram-ring {
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: pulse-ring 3s ease-in-out infinite;
+    }
+    .hologram-ring:nth-child(2) {
+      inset: -20px;
+      opacity: 0.15;
+      animation-delay: 0.5s;
+    }
+    .hologram-ring:nth-child(3) {
+      inset: -40px;
+      opacity: 0.07;
+      animation-delay: 1s;
+    }
+
+    /* ── COMMUNITY ── */
+    .community {
+      padding: 6rem 0;
+      background: var(--bg-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .community-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.75rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .community-card:hover { border-color: var(--accent); background: var(--bg-2); }
+
+    .comm-icon {
+      width: 40px; height: 40px;
+      border-radius: 6px;
+      background: var(--bg-3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      transition: background 0.2s;
+    }
+    .community-card:hover .comm-icon { background: var(--accent-glow); }
+
+    .comm-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .comm-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .comm-count {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: auto;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 3rem 0 2rem;
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .footer-brand .logo { margin-bottom: 1rem; }
+    .footer-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .footer-contact {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .footer-contact strong {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-col-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-bottom p {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .footer-bottom-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .footer-bottom-links a {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-bottom-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatA {
+      0%, 100% { transform: rotate(-4deg) translateY(0); }
+      50%       { transform: rotate(-4deg) translateY(-12px); }
+    }
+    @keyframes floatB {
+      0%, 100% { transform: rotate(3deg) translateY(0); }
+      50%       { transform: rotate(3deg) translateY(-8px); }
+    }
+    @keyframes floatC {
+      0%, 100% { transform: rotate(-1deg) translateY(0); }
+      50%       { transform: rotate(-1deg) translateY(-6px); }
+    }
+    @keyframes spin {
+      from { transform: rotateY(0deg); }
+      to   { transform: rotateY(360deg); }
+    }
+    @keyframes pulse-ring {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50%       { transform: scale(1.05); opacity: 0.5; }
+    }
+
+    /* scroll-reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; padding: 6rem 0 3rem; }
+      .hero-visual { display: none; }
+      .cat-grid { grid-template-columns: 1fr 1fr; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .programs-grid { grid-template-columns: 1fr; }
+      .community-grid { grid-template-columns: 1fr; }
+      .hologram-inner { grid-template-columns: 1fr; text-align: center; }
+      .hologram-visual { margin: 0 auto; }
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+      nav { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .cat-grid { grid-template-columns: 1fr; }
+      .products-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="#" class="logo">
+          <div class="logo-mark">
+            <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 1L17 9L9 17L1 9L9 1Z" fill="#000" stroke="#000" stroke-width="0.5"/>
+              <path d="M9 4L14 9L9 14L4 9L9 4Z" fill="#00e5a0" opacity="0.8"/>
+            </svg>
+          </div>
+          <span class="logo-text">ROHO<span>SCIENCE</span></span>
+        </a>
+
+        <nav>
+          <a href="#" class="active">매직큐브</a>
+          <a href="#">12면체 저금통</a>
+          <a href="#">과학</a>
+          <a href="#">창의만들기</a>
+          <a href="#">인성|체육|안전</a>
+          <a href="#">독도</a>
+          <a href="#">수학놀이</a>
+          <a href="#">사회|역사</a>
+          <a href="#">AI|코딩</a>
+        </nav>
+
+        <div class="header-actions">
+          <a href="#">로그인</a>
+          <a href="#">회원가입</a>
+          <a href="#" class="cart-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            장바구니
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="label">과학교육 전문기업</span>
+      </div>
+      <h1 class="hero-title">
+        SCIENCE
+        <span class="accent">COMES ALIVE</span>
+        <span class="ko">학교 현장을 위한 최적의 과학교구</span>
+      </h1>
+      <p class="hero-desc">
+        로호사이언스는 학교, 과학관, 교육기관을 위한 체험형 과학교구를 제공합니다.
+        창의적 사고와 탐구심을 키우는 제품들을 만나보세요.
+      </p>
+      <div class="hero-ctas">
+        <a href="#products" class="btn btn-primary">인기상품 보기 →</a>
+        <a href="#programs" class="btn btn-ghost">체험 프로그램</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">500+</div>
+          <div class="stat-label">과학교구 품목</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">1,200+</div>
+          <div class="stat-label">협력 학교</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">15년</div>
+          <div class="stat-label">교육 전문 경력</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="hero-card">
+          <div class="hero-card-img">🔬</div>
+          <div class="hero-card-body">
+            <div class="hero-card-tag">Science</div>
+            <div class="hero-card-name">반도체 만들기 키트</div>
+            <div class="hero-card-price">3,800원</div>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-img">🎡</div>
+          <div class="hero-card-body">
+            <div class="hero-card-tag">Creative</div>
+            <div class="hero-card-name">종이창작 롤러코스터</div>
+            <div class="hero-card-price">80,000원</div>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-img">🔮</div>
+          <div class="hero-card-body">
+            <div class="hero-card-tag">Hologram</div>
+            <div class="hero-card-name">3D 홀로그램 체험장치</div>
+            <div class="hero-card-price">15,000원</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CATEGORIES ══ -->
+  <section class="categories reveal">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="label" style="margin-bottom:0.75rem">Product Categories</div>
+          <h2 class="section-title">제품 카테고리</h2>
+        </div>
+        <a href="#" class="btn btn-ghost">전체보기 →</a>
+      </div>
+
+      <div class="cat-grid">
+        <a href="#" class="cat-card">
+          <div class="cat-icon">🧩</div>
+          <div class="cat-info">
+            <div class="cat-name">매직큐브</div>
+            <div class="cat-en">Magic Cube</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">🏺</div>
+          <div class="cat-info">
+            <div class="cat-name">12면체 저금통</div>
+            <div class="cat-en">Dodecahedron Bank</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">🔬</div>
+          <div class="cat-info">
+            <div class="cat-name">과학</div>
+            <div class="cat-en">Science</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">✂️</div>
+          <div class="cat-info">
+            <div class="cat-name">창의만들기</div>
+            <div class="cat-en">Creative Making</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">⚽</div>
+          <div class="cat-info">
+            <div class="cat-name">인성·체육·안전</div>
+            <div class="cat-en">Character / PE / Safety</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">🗺️</div>
+          <div class="cat-info">
+            <div class="cat-name">독도</div>
+            <div class="cat-en">Dokdo</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">📐</div>
+          <div class="cat-info">
+            <div class="cat-name">수학놀이</div>
+            <div class="cat-en">Math Play</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">📚</div>
+          <div class="cat-info">
+            <div class="cat-name">사회·역사</div>
+            <div class="cat-en">Society / History</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card">
+          <div class="cat-icon">🤖</div>
+          <div class="cat-info">
+            <div class="cat-name">AI·코딩</div>
+            <div class="cat-en">AI / Coding</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ BEST PRODUCTS ══ -->
+  <section class="products" id="products">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <div class="label" style="margin-bottom:0.75rem">Best Sellers</div>
+          <h2 class="section-title">가장 인기있는 상품</h2>
+        </div>
+        <a href="#" class="btn btn-ghost">전체 상품보기 →</a>
+      </div>
+
+      <div class="products-grid reveal">
+
+        <a href="#" class="product-card">
+          <span class="product-badge badge-best">BEST</span>
+          <div class="product-img">
+            💨
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">Science</div>
+            <div class="product-name">공기대포만들기</div>
+            <div class="product-price">2,000<span class="won">원</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="product-card">
+          <span class="product-badge badge-new">NEW</span>
+          <div class="product-img">
+            🎡
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">Creative</div>
+            <div class="product-name">종이창작 롤러코스터</div>
+            <div class="product-price">80,000<span class="won">원</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="product-card">
+          <span class="product-badge badge-best">BEST</span>
+          <div class="product-img">
+            🔮
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">Hologram</div>
+            <div class="product-name">3D 홀로그램 체험장치 (5인용)</div>
+            <div class="product-price">15,000<span class="won">원</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="product-card">
+          <div class="product-img">
+            🌙
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">Creative</div>
+            <div class="product-name">삼각 스크래치 무드등</div>
+            <div class="product-price">2,800<span class="won">원</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="product-card">
+          <span class="product-badge badge-best">BEST</span>
+          <div class="product-img">
+            💻
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">AI / Coding</div>
+            <div class="product-name">반도체 만들기 키트</div>
+            <div class="product-price">3,800<span class="won">원</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="product-card">
+          <div class="product-img">
+            🎮
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">Character / PE</div>
+            <div class="product-name">팀플레이 협력 4종 게임</div>
+            <div class="product-price">12,000<span class="won">원</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="product-card">
+          <div class="product-img">
+            🪀
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">Math Play</div>
+            <div class="product-name">도형팽이 3종 세트</div>
+            <div class="product-price">1,200<span class="won">원</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="product-card">
+          <span class="product-badge badge-sale">BULK</span>
+          <div class="product-img">
+            🥌
+            <div class="product-overlay">
+              <div class="overlay-btn">♡</div>
+              <div class="overlay-btn">🛒</div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">PE / Safety</div>
+            <div class="product-name">슈퍼 컬링게임 (900×2700mm)</div>
+            <div class="product-price">190,000<span class="won">원</span></div>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="products-footer reveal">
+        <a href="#" class="btn btn-ghost">더 많은 상품 보기 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROGRAMS ══ -->
+  <section class="programs" id="programs">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <div class="label" style="margin-bottom:0.75rem">Experience Programs</div>
+          <h2 class="section-title">체험 프로그램</h2>
+        </div>
+      </div>
+
+      <div class="programs-grid">
+        <div class="program-card reveal">
+          <span class="program-num">01</span>
+          <div class="program-icon">🏫</div>
+          <div>
+            <div class="program-title">SCHOOL SCIENCE<br>EXPERIENCE</div>
+            <div class="program-title-ko">학교 과학 체험 프로그램</div>
+          </div>
+          <p class="program-desc">
+            학교 현장에 찾아가는 맞춤형 과학 체험 수업입니다. 전문 강사가 직접 방문하여 학생들과 함께하는 탐구 활동으로 과학에 대한 흥미를 높여드립니다.
+          </p>
+          <a href="#" class="program-link">프로그램 신청 →</a>
+        </div>
+
+        <div class="program-card reveal reveal-delay-1">
+          <span class="program-num">02</span>
+          <div class="program-icon">🔮</div>
+          <div>
+            <div class="program-title">3D HOLOGRAM<br>WORKSHOP</div>
+            <div class="program-title-ko">3D 홀로그램 체험 워크숍</div>
+          </div>
+          <p class="program-desc">
+            최첨단 홀로그램 기술을 직접 체험해보는 특별한 프로그램입니다. 과학의 원리를 이해하고 미래 기술을 경험하는 특별한 시간을 제공합니다.
+          </p>
+          <a href="#" class="program-link">체험 신청 →</a>
+        </div>
+
+        <div class="program-card reveal reveal-delay-2">
+          <span class="program-num">03</span>
+          <div class="program-icon">🏆</div>
+          <div>
+            <div class="program-title">TURTLE SHIP<br>COMPETITION</div>
+            <div class="program-title-ko">거북선 대회</div>
+          </div>
+          <p class="program-desc">
+            역사와 과학이 만나는 창의적 경진대회입니다. 학생들이 직접 거북선 모형을 만들고 경쟁하며 역사적 사고력과 창의성을 동시에 기릅니다.
+          </p>
+          <a href="#" class="program-link">대회 정보 →</a>
+        </div>
+
+        <div class="program-card reveal reveal-delay-3">
+          <span class="program-num">04</span>
+          <div class="program-icon">🏛️</div>
+          <div>
+            <div class="program-title">SCIENCE EXPO<br>& EXHIBITION</div>
+            <div class="program-title-ko">과학 박람회 및 전시 행사</div>
+          </div>
+          <p class="program-desc">
+            전국 과학 박람회 및 전시 행사 참여를 지원합니다. 교육기관과 협력하여 과학 문화 확산에 기여하는 다양한 이벤트를 운영합니다.
+          </p>
+          <a href="#" class="program-link">행사 일정 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ HOLOGRAM CTA ══ -->
+  <section class="hologram-cta reveal">
+    <div class="container">
+      <div class="hologram-inner">
+        <div class="hologram-glow"></div>
+        <div>
+          <div class="label hologram-label">Featured Experience</div>
+          <h2 class="hologram-title">EXPERIENCE THE FUTURE<br><span style="color:var(--accent)">WITH HOLOGRAM</span></h2>
+          <p class="hologram-desc">
+            3D 홀로그램 체험 장치로 미래 과학 기술을 직접 체험해보세요.
+            5인이 동시에 체험 가능한 특수 제작 장치로 학교 현장에서 잊을 수 없는 과학 경험을 만들어 드립니다.
+          </p>
+          <div class="hero-ctas">
+            <a href="#" class="btn btn-primary">홀로그램 체험 신청 →</a>
+            <a href="#" class="btn btn-ghost">제품 상세보기</a>
+          </div>
+        </div>
+        <div class="hologram-visual">
+          <div class="hologram-ring"></div>
+          <div class="hologram-ring"></div>
+          <div class="hologram-ring"></div>
+          <div class="pyramid"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ COMMUNITY ══ -->
+  <section class="community reveal">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="label" style="margin-bottom:0.75rem">Community</div>
+          <h2 class="section-title">커뮤니티</h2>
+        </div>
+        <a href="#" class="btn btn-ghost">게시판 전체보기 →</a>
+      </div>
+
+      <div class="community-grid">
+        <a href="#" class="community-card">
+          <div class="comm-icon">🏛️</div>
+          <div class="comm-title">박람회·과학전시행사</div>
+          <div class="comm-desc">전국 과학 박람회 및 전시 행사 정보와 참여 후기를 공유합니다.</div>
+          <div class="comm-count">Science Expos</div>
+        </a>
+        <a href="#" class="community-card">
+          <div class="comm-icon">⛵</div>
+          <div class="comm-title">거북선 대회</div>
+          <div class="comm-desc">거북선 만들기 대회 공지, 일정, 결과 및 참가 신청 안내.</div>
+          <div class="comm-count">Turtle Ship Competition</div>
+        </a>
+        <a href="#" class="community-card">
+          <div class="comm-icon">📄</div>
+          <div class="comm-title">제품 자료</div>
+          <div class="comm-desc">각 제품의 사용 매뉴얼, 교육 자료, 수업 지도안을 다운로드하세요.</div>
+          <div class="comm-count">Product Resources</div>
+        </a>
+        <a href="#" class="community-card">
+          <div class="comm-icon">💬</div>
+          <div class="comm-title">자유게시판</div>
+          <div class="comm-desc">제품 사용 경험, 수업 활용 팁, 궁금한 점을 자유롭게 나눠보세요.</div>
+          <div class="comm-count">Free Board</div>
+        </a>
+        <a href="#" class="community-card">
+          <div class="comm-icon">🖼️</div>
+          <div class="comm-title">갤러리</div>
+          <div class="comm-desc">수업 현장, 대회 참가, 체험 프로그램 등 생생한 현장 사진 모음.</div>
+          <div class="comm-count">Gallery</div>
+        </a>
+        <a href="#" class="community-card" style="border-style:dashed; justify-content:center; align-items:center; text-align:center; min-height:140px;">
+          <div style="color:var(--muted);">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem;">📞</div>
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">문의 및 상담</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;color:var(--accent);">031-977-1663</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="#" class="logo" style="margin-bottom:1rem">
+            <div class="logo-mark">
+              <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 1L17 9L9 17L1 9L9 1Z" fill="#000" stroke="#000" stroke-width="0.5"/>
+                <path d="M9 4L14 9L9 14L4 9L9 4Z" fill="#00e5a0" opacity="0.8"/>
+              </svg>
+            </div>
+            <span class="logo-text">ROHO<span>SCIENCE</span></span>
+          </a>
+          <p class="footer-desc">
+            학교 현장을 위한 과학교육 전문기업. 창의적 탐구와 체험을 통해 미래의 과학자를 키워갑니다.
+          </p>
+          <div class="footer-contact">
+            <strong>031-977-1663</strong>
+            월–금 09:00 — 18:00
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Products</div>
+          <ul class="footer-links">
+            <li><a href="#">매직큐브</a></li>
+            <li><a href="#">과학 교구</a></li>
+            <li><a href="#">창의만들기</a></li>
+            <li><a href="#">AI · 코딩</a></li>
+            <li><a href="#">수학놀이</a></li>
+            <li><a href="#">인성·체육·안전</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Programs</div>
+          <ul class="footer-links">
+            <li><a href="#">학교 과학 체험</a></li>
+            <li><a href="#">3D 홀로그램 워크숍</a></li>
+            <li><a href="#">거북선 대회</a></li>
+            <li><a href="#">과학 박람회</a></li>
+            <li><a href="#">단체 맞춤 제작</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Community</div>
+          <ul class="footer-links">
+            <li><a href="#">박람회·전시행사</a></li>
+            <li><a href="#">거북선 대회</a></li>
+            <li><a href="#">제품 자료</a></li>
+            <li><a href="#">자유게시판</a></li>
+            <li><a href="#">갤러리</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2025 로호사이언스. All rights reserved. | 사업자등록번호: 000-00-00000</p>
+        <div class="footer-bottom-links">
+          <a href="#">이용약관</a>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">사이트맵</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ SCROLL REVEAL ══ -->
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Smooth active nav on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 100;
+        if (window.scrollY >= top) current = section.getAttribute('id');
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

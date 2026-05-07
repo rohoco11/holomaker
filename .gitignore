@@ -1,0 +1,10 @@
+# Temp Office lock files
+~$*
+
+# Local dev scripts
+serve.bat
+serve.pl
+serve.ps1
+
+# Claude Code IDE settings
+.claude/
