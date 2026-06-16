@@ -651,11 +651,11 @@ function drawHologram(ctx, src, S, sw, sh) {
     // Top triangle:    (0,0)→(S,0)→(cx,cy)   image center at (half, qtr)
     { px: half, py: qtr,   a: 0,          poly: [[0,0],[S,0],[cx,cy]] },
     // Right triangle:  (S,0)→(S,S)→(cx,cy)   image center at (S*3/4, half)
-    { px: S*3/4, py: half, a: -Math.PI/2, poly: [[S,0],[S,S],[cx,cy]] },
+    { px: S*3/4, py: half, a: Math.PI/2,  poly: [[S,0],[S,S],[cx,cy]] },
     // Bottom triangle: (S,S)→(0,S)→(cx,cy)   image center at (half, S*3/4)
     { px: half, py: S*3/4, a: Math.PI,    poly: [[S,S],[0,S],[cx,cy]] },
     // Left triangle:   (0,S)→(0,0)→(cx,cy)   image center at (qtr, half)
-    { px: qtr, py: half,   a: Math.PI/2,  poly: [[0,S],[0,0],[cx,cy]] },
+    { px: qtr, py: half,   a: -Math.PI/2, poly: [[0,S],[0,0],[cx,cy]] },
   ];
 
   for (const { px, py, a, poly } of views) {
