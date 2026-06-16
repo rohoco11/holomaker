@@ -701,36 +701,59 @@ function processImage(file) {
   img.src = url;
 }
 
+/* ── Seek helper — won't hang if already at target position ── */
+function seekTo(video, t) {
+  return new Promise((res, rej) => {
+    const timeout = setTimeout(() => res(), 3000); // 3s safety timeout
+    if (Math.abs(video.currentTime - t) < 0.05) { clearTimeout(timeout); res(); return; }
+    video.addEventListener('seeked', () => { clearTimeout(timeout); res(); }, { once: true });
+    video.addEventListener('error',  () => { clearTimeout(timeout); rej(new Error('seek failed')); }, { once: true });
+    video.currentTime = t;
+  });
+}
+
 /* ── Video ── */
 async function processVideo(file) {
+  let url;
   try {
     setProgress(5, 'Decoding video…');
     const video = Object.assign(document.createElement('video'), { muted: true, playsInline: true });
-    const url = URL.createObjectURL(file);
+    url = URL.createObjectURL(file);
     video.src = url;
+
     await new Promise((res, rej) => {
       video.addEventListener('loadedmetadata', res, { once: true });
-      video.addEventListener('error', rej, { once: true });
+      video.addEventListener('error', () => rej(new Error('Could not load video — format may not be supported on this browser.')), { once: true });
+      setTimeout(() => rej(new Error('Video load timed out.')), 15000);
     });
 
     const S = getS(), fps = getFps(), dur = video.duration;
 
-    // grab frame 0 for thumbnail
-    video.currentTime = 0;
-    await new Promise(res => video.addEventListener('seeked', res, { once: true }));
+    // Grab frame 0 for thumbnail
+    await seekTo(video, 0);
     const tc = Object.assign(document.createElement('canvas'), { width: S, height: S });
     drawHologram(tc.getContext('2d'), video, S, video.videoWidth, video.videoHeight);
     const thumb = await makeThumb(tc);
-    video.currentTime = 0;
-    await new Promise(res => video.addEventListener('seeked', res, { once: true }));
+
+    // Reset to start before encoding
+    await seekTo(video, 0);
 
     let blob;
     if (typeof VideoEncoder !== 'undefined') {
-      blob = await encodeWebCodecs(video, S, fps, dur);
+      try {
+        blob = await encodeWebCodecs(video, S, fps, dur);
+      } catch (e) {
+        console.warn('WebCodecs failed, falling back to MediaRecorder:', e);
+        await seekTo(video, 0);
+        const mime = MediaRecorder.isTypeSupported('video/mp4') ? 'video/mp4' : pickWebm();
+        blob = await recordMime(video, S, fps, dur, mime);
+      }
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
       blob = await recordMime(video, S, fps, dur, 'video/mp4');
     } else {
-      blob = await recordMime(video, S, fps, dur, pickWebm());
+      const mime = pickWebm();
+      if (!mime) throw new Error('Your browser does not support video recording. Try Chrome or Edge.');
+      blob = await recordMime(video, S, fps, dur, mime);
     }
 
     URL.revokeObjectURL(url);
@@ -739,8 +762,9 @@ async function processVideo(file) {
     await saveToLibrary(blob, thumb, 'video', S, ext);
     setTimeout(() => showResult(blob, 'video', S, ext), 350);
   } catch (err) {
-    console.error(err);
-    showToast('Video processing failed — try a shorter clip.', 'err');
+    if (url) URL.revokeObjectURL(url);
+    console.error('Video processing error:', err);
+    showToast(err.message || 'Video processing failed — try Chrome or a shorter clip.', 'err');
     resetApp();
   }
 }
