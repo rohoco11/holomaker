@@ -632,23 +632,42 @@ const getS   = () => parseInt(document.getElementById('outputSize').value, 10);
 const getBg  = () => document.getElementById('bgColor').value;
 const getFps = () => parseInt(document.getElementById('fps').value, 10);
 
-/* ── Hologram renderer ── */
+/* ── Hologram renderer ──
+   4 triangular panels meet at canvas center — zero overlap guaranteed.
+   Each triangle is one quadrant: e.g. Top = [(0,0),(S,0),(S/2,S/2)]
+─────────────────────────────────────────── */
 function drawHologram(ctx, src, S, sw, sh) {
   ctx.fillStyle = getBg();
   ctx.fillRect(0, 0, S, S);
+
   const half = S / 2, qtr = S / 4;
-  const sc = Math.min(half / sw, half / sh);
+  // Scale image to fit within a half×half panel with 10% breathing room
+  const sc = Math.min(half / sw, half / sh) * 0.90;
   const dw = sw * sc, dh = sh * sc;
+
+  const cx = half, cy = half; // canvas center — all triangles meet here
+
   const views = [
-    { px: half,     py: qtr,    a: Math.PI,     cx: qtr,  cy: 0,    cw: half, ch: half },
-    { px: S*3/4,    py: half,   a: -Math.PI/2,  cx: half, cy: qtr,  cw: half, ch: half },
-    { px: half,     py: S*3/4,  a: 0,           cx: qtr,  cy: half, cw: half, ch: half },
-    { px: qtr,      py: half,   a: Math.PI/2,   cx: 0,    cy: qtr,  cw: half, ch: half },
+    // Top triangle:    (0,0)→(S,0)→(cx,cy)   image center at (half, qtr)
+    { px: half, py: qtr,   a: 0,          poly: [[0,0],[S,0],[cx,cy]] },
+    // Right triangle:  (S,0)→(S,S)→(cx,cy)   image center at (S*3/4, half)
+    { px: S*3/4, py: half, a: -Math.PI/2, poly: [[S,0],[S,S],[cx,cy]] },
+    // Bottom triangle: (S,S)→(0,S)→(cx,cy)   image center at (half, S*3/4)
+    { px: half, py: S*3/4, a: Math.PI,    poly: [[S,S],[0,S],[cx,cy]] },
+    // Left triangle:   (0,S)→(0,0)→(cx,cy)   image center at (qtr, half)
+    { px: qtr, py: half,   a: Math.PI/2,  poly: [[0,S],[0,0],[cx,cy]] },
   ];
-  for (const { px, py, a, cx, cy, cw, ch } of views) {
+
+  for (const { px, py, a, poly } of views) {
     ctx.save();
-    ctx.beginPath(); ctx.rect(cx, cy, cw, ch); ctx.clip();
-    ctx.translate(px, py); ctx.rotate(a);
+    ctx.beginPath();
+    ctx.moveTo(poly[0][0], poly[0][1]);
+    ctx.lineTo(poly[1][0], poly[1][1]);
+    ctx.lineTo(poly[2][0], poly[2][1]);
+    ctx.closePath();
+    ctx.clip();
+    ctx.translate(px, py);
+    ctx.rotate(a);
     ctx.drawImage(src, -dw/2, -dh/2, dw, dh);
     ctx.restore();
   }
