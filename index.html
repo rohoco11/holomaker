@@ -669,6 +669,7 @@ function drawHologram(ctx, src, S, sw, sh) {
     ctx.clip();
     ctx.translate(px, py);
     ctx.rotate(a);
+    ctx.scale(-1, 1);
     ctx.drawImage(src, -dw/2, -dh/2, dw, dh);
     ctx.restore();
   }
