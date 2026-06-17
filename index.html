@@ -565,10 +565,11 @@ async function refreshGallery() {
         <div class="g-date">${fmtDate(item.date)}</div>
         <span class="g-badge">${fmtSize(item.blob.size)} · ${item.ext.toUpperCase()}</span>
         <div class="g-actions">
-          <a class="g-dl" href="${blobUrl}" download="${item.filename}">⬇ Save</a>
+          <button class="g-dl" data-dl="${item.id}">⬇ Save</button>
           <button class="g-del" data-id="${item.id}" title="Delete">✕</button>
         </div>
       </div>`;
+    card.querySelector('.g-dl').addEventListener('click', () => saveFile(item.blob, item.filename));
     card.querySelector('.g-del').addEventListener('click', async () => {
       await dbDelete(item.id);
       URL.revokeObjectURL(thumbUrl);
@@ -834,6 +835,26 @@ const pickWebm = () =>
 
 const mmss = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
 
+/* ── Save file → Photos on iOS/Android, download on desktop ── */
+async function saveFile(blob, filename) {
+  if (navigator.canShare) {
+    const file = new File([blob], filename, { type: blob.type });
+    if (navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: 'HoloMaker' });
+        return;
+      } catch (e) {
+        if (e.name === 'AbortError') return; // user cancelled — don't fall through
+      }
+    }
+  }
+  // Desktop fallback: trigger browser download
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(blob), download: filename,
+  });
+  a.click();
+}
+
 /* ── Save to library ── */
 async function saveToLibrary(blob, thumb, type, S, ext) {
   const filename = `hologram_${Date.now()}.${ext}`;
@@ -861,8 +882,9 @@ function showResult(blob, type, S, ext) {
     previewWrap.appendChild(vid);
   }
   resultMetaText.textContent = `${S} × ${S} px · ${fmtSize(blob.size)} · ${ext.toUpperCase()}`;
-  downloadBtn.href     = blobUrl;
-  downloadBtn.download = filename;
+  downloadBtn.onclick = () => saveFile(blob, filename);
+  downloadBtn.removeAttribute('href');
+  downloadBtn.removeAttribute('download');
   setState('result');
   setTimeout(() => stateResult.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
