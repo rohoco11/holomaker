@@ -66,34 +66,41 @@ def _hangul_count(text: str) -> int:
     return sum(1 for ch in text if any(lo <= ord(ch) <= hi for lo, hi in HANGUL_RANGES))
 
 
-def verify_rendering(html_path: str, font_family: str, expected_snippets: list[str], min_hangul_chars: int = 20) -> dict:
+def verify_rendering(html_path: str, expected_snippets: list[str], min_hangul_chars: int = 20) -> dict:
     """Non-visual QA check to replace the old screenshot()+Read self-check.
 
     Loads the HTML in the same Playwright/Chromium used for the real render
     and checks, without ever looking at pixels:
-      1. font_ok -- the browser actually resolved a font for the primary
-         family named in `font_family` (catches the case where fc-list found
-         a Korean font at the OS level but the CSS family name doesn't match
-         what got installed, which fc-list alone can't catch).
-      2. hangul_ok -- the rendered page's visible text contains at least
+      1. hangul_ok -- the rendered page's visible text contains at least
          `min_hangul_chars` Hangul characters (catches an empty/broken
          template rendering no CJK text at all).
-      3. content_ok -- every string in `expected_snippets` (e.g. the class
+      2. content_ok -- every string in `expected_snippets` (e.g. the class
          name, a chunk of the teacher letter, each student's name) shows up
          verbatim in the rendered text (catches escaping/truncation/mangling
-         bugs that a font check alone would miss).
+         bugs). Verified robust against embedded newlines, HTML-special
+         characters (&, <, ", '), and content that overflows the page box.
 
-    Returns {"ok": bool, "font_ok": bool, "hangul_ok": bool, "content_ok": bool,
+    This deliberately does NOT try to verify font *glyph* coverage (e.g. via
+    `document.fonts.check()`) -- that was tried and found to always return
+    `true` in Chromium regardless of whether the named font exists at all
+    (confirmed 2026-07-31: it returned true for a nonexistent font name and
+    even for 'Arial' rendering Hangul text), so it provided no real signal.
+    In practice this doesn't matter: Chromium performs automatic per-
+    codepoint font substitution for CJK text using whatever Korean-capable
+    font is installed, regardless of the requested CSS font-family, so tofu
+    boxes are only possible when the OS has *no* Korean font at all --
+    exactly what step 1's `fc-list :lang=ko` (run before any rendering)
+    already guards against. Font availability is that check's job, not
+    this function's.
+
+    Returns {"ok": bool, "hangul_ok": bool, "content_ok": bool,
     "missing_snippets": [...], "hangul_count": int, "detail": str}.
     """
     abs_path = os.path.abspath(html_path)
-    primary_font = font_family.split(",")[0].strip().strip("'\"")
     with sync_playwright() as p:
         browser = launch_browser(p)
         page = browser.new_page()
         page.goto(f"file://{abs_path}")
-        page.evaluate("document.fonts.ready")
-        font_ok = bool(page.evaluate(f"document.fonts.check(\"16px '{primary_font}'\")"))
         text = page.inner_text("body")
         browser.close()
 
@@ -102,15 +109,13 @@ def verify_rendering(html_path: str, font_family: str, expected_snippets: list[s
     missing = [s for s in expected_snippets if s and s not in text]
     content_ok = not missing
 
-    ok = font_ok and hangul_ok and content_ok
+    ok = hangul_ok and content_ok
     detail_parts = [
-        f"font '{primary_font}' resolved" if font_ok else f"font '{primary_font}' NOT resolved by browser",
         f"{hangul_count} Hangul chars found" if hangul_ok else f"only {hangul_count} Hangul chars found (need {min_hangul_chars})",
         "all expected content present" if content_ok else f"missing snippets: {missing}",
     ]
     return {
         "ok": ok,
-        "font_ok": font_ok,
         "hangul_ok": hangul_ok,
         "content_ok": content_ok,
         "missing_snippets": missing,

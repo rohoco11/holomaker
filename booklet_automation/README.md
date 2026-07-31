@@ -36,24 +36,31 @@ Playwright/font/API boilerplate from scratch every run.
   pre-installed Chromium at `/opt/pw-browsers/chromium` if Playwright's
   own browser download is blocked (confirmed blocked in this sandbox --
   `cdn.playwright.dev` is not on the outbound allowlist).
-  - `verify_rendering(html_path, font_family, expected_snippets)` -- the
-    automated QA check the routine actually uses. Loads the HTML in
-    Playwright and checks, without looking at any pixels: (1) the browser
-    resolved a real font for the primary family in `font_family` (via
-    `document.fonts.check(...)`), (2) the rendered body text contains a
-    reasonable number of Hangul characters, (3) every string in
+  - `verify_rendering(html_path, expected_snippets)` -- the automated QA
+    check the routine actually uses. Loads the HTML in Playwright and
+    checks, without looking at any pixels: (1) the rendered body text
+    contains a reasonable number of Hangul characters, (2) every string in
     `expected_snippets` (e.g. class name, a chunk of the teacher letter,
-    each student's name) appears verbatim in the rendered text. Returns a
-    dict with an overall `ok` bool plus per-check detail -- see the
-    docstring for the full shape.
+    each student's name) appears verbatim in the rendered text -- verified
+    robust against embedded newlines, HTML-special characters, and content
+    that overflows the page box. Returns a dict with an overall `ok` bool
+    plus per-check detail -- see the docstring for the full shape.
+    Deliberately does NOT try to verify font glyph coverage itself
+    (`document.fonts.check()` was tried and found to always return `true`
+    in Chromium regardless of whether the named font exists -- it gave no
+    real signal). Font availability is step 1's job (`fc-list :lang=ko`,
+    before any rendering): Chromium auto-substitutes CJK glyphs per
+    codepoint from whatever Korean font is installed regardless of the
+    requested `font-family`, so tofu boxes are only possible when the OS
+    has no Korean font at all, which fc-list already catches.
   - `screenshot(html_path, png_path)` -- renders a PNG of the first page.
     Kept only for interactive/manual debugging (a human opening the PNG
     themselves). **Do not use this in the unattended routine and do not
     `Read` the PNG from the routine's own reasoning** -- doing so was
     observed to hang the routine indefinitely (15+ minutes, no further
     tool calls, no error) on 2026-07-31, reproduced on a second manual
-    trigger of the same run. Use `verify_rendering()` instead, which
-    covers the same "did Korean actually render, not tofu boxes" concern
+    trigger of the same run and on the next hourly cron firing (3/3). Use
+    `verify_rendering()` instead, which catches template/content bugs
     without ever needing a vision read-back.
 
 ## Manifest shape
