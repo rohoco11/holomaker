@@ -22,8 +22,11 @@ def fetch_requests(secret: str) -> dict:
         return json.loads(resp.read().decode("utf-8"))
 
 
-def upload_pdf(secret: str, request_id: str, stage: str, pdf_path: str) -> dict:
-    """stage must be 'draft' or 'final'."""
+def upload_pdf(secret: str, request_id: str, stage: str, pdf_path: str, manifest_json: str | None = None) -> dict:
+    """stage must be 'draft' or 'final'. `manifest_json` (a JSON string) is only
+    meaningful for stage='draft' -- it's persisted so a later run (for the
+    'final' stage, with zero memory of this one) can reuse the exact
+    manifest the owner reviewed and approved, instead of re-writing it."""
     boundary = uuid.uuid4().hex
     with open(pdf_path, "rb") as f:
         pdf_bytes = f.read()
@@ -36,14 +39,18 @@ def upload_pdf(secret: str, request_id: str, stage: str, pdf_path: str) -> dict:
     parts = [
         text_field("requestId", request_id),
         text_field("stage", stage),
+    ]
+    if manifest_json is not None:
+        parts.append(text_field("manifest", manifest_json))
+    parts.append(
         (
             f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="output.pdf"\r\n'
             f"Content-Type: application/pdf\r\n\r\n"
         ).encode("utf-8")
         + pdf_bytes
-        + b"\r\n",
-        f"--{boundary}--\r\n".encode("utf-8"),
-    ]
+        + b"\r\n"
+    )
+    parts.append(f"--{boundary}--\r\n".encode("utf-8"))
     body = b"".join(parts)
 
     req = urllib.request.Request(
