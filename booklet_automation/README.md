@@ -35,10 +35,26 @@ Playwright/font/API boilerplate from scratch every run.
   (`render(html_path, pdf_path, width_mm, height_mm)`). Falls back to the
   pre-installed Chromium at `/opt/pw-browsers/chromium` if Playwright's
   own browser download is blocked (confirmed blocked in this sandbox --
-  `cdn.playwright.dev` is not on the outbound allowlist). Also exposes
-  `screenshot(html_path, png_path)` for a quick visual sanity check (e.g.
-  confirming Korean text isn't rendering as tofu boxes) before trusting a
-  full run -- read the PNG back with the Read tool to actually look at it.
+  `cdn.playwright.dev` is not on the outbound allowlist).
+  - `verify_rendering(html_path, font_family, expected_snippets)` -- the
+    automated QA check the routine actually uses. Loads the HTML in
+    Playwright and checks, without looking at any pixels: (1) the browser
+    resolved a real font for the primary family in `font_family` (via
+    `document.fonts.check(...)`), (2) the rendered body text contains a
+    reasonable number of Hangul characters, (3) every string in
+    `expected_snippets` (e.g. class name, a chunk of the teacher letter,
+    each student's name) appears verbatim in the rendered text. Returns a
+    dict with an overall `ok` bool plus per-check detail -- see the
+    docstring for the full shape.
+  - `screenshot(html_path, png_path)` -- renders a PNG of the first page.
+    Kept only for interactive/manual debugging (a human opening the PNG
+    themselves). **Do not use this in the unattended routine and do not
+    `Read` the PNG from the routine's own reasoning** -- doing so was
+    observed to hang the routine indefinitely (15+ minutes, no further
+    tool calls, no error) on 2026-07-31, reproduced on a second manual
+    trigger of the same run. Use `verify_rendering()` instead, which
+    covers the same "did Korean actually render, not tofu boxes" concern
+    without ever needing a vision read-back.
 
 ## Manifest shape
 
@@ -58,9 +74,9 @@ Playwright/font/API boilerplate from scratch every run.
 `font_family` should be discovered at runtime, not hardcoded: run
 `fc-list :lang=ko` first; if nothing Korean is installed, install one
 (`apt-get install -y fonts-noto-cjk`, sandbox permitting) before rendering
-anything real, and confirm with a `screenshot()` + Read before trusting a
-batch. `image_path` is only needed for `build_final_html` -- omit or leave
-`None` for the draft stage.
+anything real, and confirm with `render_pdf.verify_rendering()` before
+trusting a batch. `image_path` is only needed for `build_final_html` --
+omit or leave `None` for the draft stage.
 
 ## Not included here (by design)
 
