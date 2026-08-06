@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="Turn any photo or video into a pyramid hologram — free, instant, private. By ROHO." />
+  <meta name="description" content="사진이나 영상을 피라미드 홀로그램으로 변환하세요 — 무료, 즉시 변환, 완전 비공개. ROHO 제작." />
   <meta name="theme-color" content="#03070e" />
-  <title>HoloMaker — Pyramid Hologram Creator by ROHO</title>
+  <title>HoloMaker — ROHO 피라미드 홀로그램 생성기</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
@@ -337,10 +337,10 @@
 
   <!-- ── Header ── -->
   <header class="header">
-    <span class="header-eyebrow">by ROHO</span>
+    <span class="header-eyebrow">ROHO 제작</span>
     <span class="gem">🔮</span>
     <h1>Holo<em>Maker</em></h1>
-    <p>Turn any photo or video into a 4-view pyramid hologram file — free, instant, private.</p>
+    <p>사진이나 영상을 4면 피라미드 홀로그램 파일로 만들어보세요 — 무료, 즉시 변환, 완전 비공개.</p>
   </header>
   <div class="rule"></div>
 
@@ -350,18 +350,18 @@
     <div id="stateUpload">
       <div class="upload-zone" id="uploadZone">
         <span class="up-icon">📤</span>
-        <h2>Drop your photo or video</h2>
-        <p class="upload-sub">We'll build the 4-view hologram layout right here in your browser — nothing leaves your device.</p>
-        <button class="btn btn-teal" onclick="event.stopPropagation(); fileInput.click()">Choose File</button>
+        <h2>사진이나 영상을 넣어주세요</h2>
+        <p class="upload-sub">브라우저에서 바로 4면 홀로그램 레이아웃을 만들어드려요 — 기기 밖으로 전송되는 데이터는 없어요.</p>
+        <button class="btn btn-teal" onclick="event.stopPropagation(); fileInput.click()">파일 선택</button>
         <div class="file-types">JPG · PNG · WebP · MP4 · MOV · WebM</div>
       </div>
 
       <div class="settings-panel">
-        <span class="panel-label">Output Settings</span>
+        <span class="panel-label">출력 설정</span>
         <div class="setting-row">
           <div>
-            <div class="setting-name">Resolution</div>
-            <div class="setting-desc">Square output size</div>
+            <div class="setting-name">해상도</div>
+            <div class="setting-desc">정사각형 출력 크기</div>
           </div>
           <select id="outputSize">
             <option value="720">720 × 720</option>
@@ -371,19 +371,19 @@
         </div>
         <div class="setting-row">
           <div>
-            <div class="setting-name">Background</div>
-            <div class="setting-desc">Color behind the 4 views</div>
+            <div class="setting-name">배경색</div>
+            <div class="setting-desc">네 화면 뒤의 배경 색상</div>
           </div>
           <select id="bgColor">
-            <option value="#000000" selected>Black</option>
-            <option value="#06060f">Dark Navy</option>
-            <option value="#0d0018">Deep Purple</option>
+            <option value="#000000" selected>검정</option>
+            <option value="#06060f">다크 네이비</option>
+            <option value="#0d0018">딥 퍼플</option>
           </select>
         </div>
         <div class="setting-row">
           <div>
-            <div class="setting-name">Video FPS</div>
-            <div class="setting-desc">Output frame rate</div>
+            <div class="setting-name">영상 프레임레이트</div>
+            <div class="setting-desc">출력 초당 프레임 수</div>
           </div>
           <select id="fps">
             <option value="24">24 fps</option>
@@ -398,12 +398,12 @@
     <div id="stateProcessing" class="hidden">
       <div class="proc-card">
         <span class="proc-icon">⚙️</span>
-        <h3>Creating your hologram</h3>
-        <p class="proc-sub" id="procStatus">Loading media…</p>
+        <h3>홀로그램 만드는 중</h3>
+        <p class="proc-sub" id="procStatus">미디어 불러오는 중…</p>
         <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
         <p class="prog-pct" id="progPct">0%</p>
         <div class="warn-box hidden" id="videoWarn">
-          ⚠️ Keep this tab open while processing. Video encodes in real-time — switching away may stall it.
+          ⚠️ 변환하는 동안 이 탭을 닫지 마세요. 영상은 실시간으로 인코딩되며, 다른 탭으로 이동하면 멈출 수 있어요.
         </div>
       </div>
     </div>
@@ -417,8 +417,8 @@
           <span id="resultMetaText"></span>
         </div>
         <div class="result-actions">
-          <a id="downloadBtn" class="btn btn-amber btn-block">⬇ Save Hologram File</a>
-          <button class="btn btn-ghost btn-block" onclick="resetApp()">↩ Convert Another</button>
+          <a id="downloadBtn" class="btn btn-amber btn-block">⬇ 홀로그램 파일 저장</a>
+          <button class="btn btn-ghost btn-block" onclick="resetApp()">↩ 다른 파일 변환하기</button>
         </div>
       </div>
     </div>
@@ -426,18 +426,18 @@
     <!-- ── My Holograms ── -->
     <section class="gallery-section">
       <div class="section-hd">
-        <h2>My Holograms</h2>
+        <h2>내 홀로그램</h2>
         <span class="section-count" id="galleryCount"></span>
       </div>
       <div id="galleryGrid" class="gallery-grid"></div>
       <div id="galleryEmpty" class="gallery-empty hidden">
         <span class="empty-icon">🔮</span>
-        Your converted holograms will appear here.<br>
-        Saved on this device — re-download any time.
+        변환된 홀로그램이 여기에 표시됩니다.<br>
+        이 기기에 저장되며 언제든 다시 다운로드할 수 있어요.
       </div>
       <div class="storage-bar hidden" id="storageBar">
         <div class="storage-lbl">
-          <span>Storage used on this device</span>
+          <span>이 기기에서 사용 중인 저장공간</span>
           <span id="storageUsedLabel"></span>
         </div>
         <div class="storage-track"><div class="storage-fill" id="storageFill"></div></div>
@@ -446,34 +446,34 @@
 
     <!-- ── How to view ── -->
     <div class="how-section">
-      <h3>💡 How to view your hologram</h3>
+      <h3>💡 홀로그램 보는 방법</h3>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div>
-            <h4>Save the file</h4>
-            <p>Tap "Save Hologram File" — it saves to your device and stays in My Holograms above for re-download any time.</p>
+            <h4>파일 저장하기</h4>
+            <p>"홀로그램 파일 저장" 버튼을 눌러주세요 — 기기에 저장되고, 위의 "내 홀로그램"에서 언제든 다시 다운로드할 수 있어요.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div>
-            <h4>Build the pyramid</h4>
-            <p>Cut 4 trapezoid panels from clear plastic (a CD case works great). Tape them into a 4-sided pyramid — no top or bottom.</p>
+            <h4>피라미드 만들기</h4>
+            <p>투명 플라스틱(CD 케이스가 딱 좋아요)으로 사다리꼴 조각 4개를 잘라주세요. 테이프로 붙여 위아래가 뚫린 4면 피라미드를 만들어요.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div>
-            <h4>Place on your screen</h4>
-            <p>Open the file full-screen on your phone. Set the pyramid's small opening face-down in the center of the screen.</p>
+            <h4>화면 위에 올리기</h4>
+            <p>휴대폰에서 파일을 전체 화면으로 열어주세요. 피라미드의 작은 구멍이 아래를 향하도록 화면 중앙에 놓아요.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
           <div>
-            <h4>Watch the hologram</h4>
-            <p>Dim the lights. Look through each face of the pyramid — the floating 3D image will appear.</p>
+            <h4>홀로그램 감상하기</h4>
+            <p>조명을 어둡게 하고 피라미드의 각 면을 들여다보세요 — 공중에 떠 있는 3D 이미지가 나타나요.</p>
           </div>
         </div>
       </div>
@@ -482,8 +482,8 @@
   </div><!-- /.content -->
 
   <footer class="footer">
-    🔒 All processing happens in your browser — nothing is uploaded.<br>
-    <strong>ROHO HoloMaker</strong> · Free forever
+    🔒 모든 처리는 브라우저 안에서 이루어지며 아무것도 업로드되지 않아요.<br>
+    <strong>ROHO HoloMaker</strong> · 무료
   </footer>
 
 </div><!-- /.page -->
@@ -551,7 +551,7 @@ async function refreshGallery() {
     return;
   }
   galleryEmpty.classList.add('hidden');
-  galleryCount.textContent = `${items.length} saved`;
+  galleryCount.textContent = `${items.length}개 저장됨`;
 
   for (const item of [...items].reverse()) {
     const thumbUrl = URL.createObjectURL(item.thumb);
@@ -560,13 +560,13 @@ async function refreshGallery() {
     const card = document.createElement('div');
     card.className = 'g-card';
     card.innerHTML = `
-      <img class="g-thumb" src="${thumbUrl}" alt="hologram preview" />
+      <img class="g-thumb" src="${thumbUrl}" alt="홀로그램 미리보기" />
       <div class="g-info">
         <div class="g-date">${fmtDate(item.date)}</div>
         <span class="g-badge">${fmtSize(item.blob.size)} · ${item.ext.toUpperCase()}</span>
         <div class="g-actions">
-          <button class="g-dl" data-dl="${item.id}">⬇ Save</button>
-          <button class="g-del" data-id="${item.id}" title="Delete">✕</button>
+          <button class="g-dl" data-dl="${item.id}">⬇ 저장</button>
+          <button class="g-del" data-id="${item.id}" title="삭제">✕</button>
         </div>
       </div>`;
     card.querySelector('.g-dl').addEventListener('click', () => saveFile(item.blob, item.filename));
@@ -588,7 +588,7 @@ async function refreshGallery() {
   }
 }
 
-const fmtDate = iso => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+const fmtDate = iso => new Date(iso).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric', year: 'numeric' });
 const fmtSize = b   => b < 1_048_576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1_048_576).toFixed(1) + ' MB';
 
 /* ── Upload events ── */
@@ -622,9 +622,9 @@ function setProgress(pct, msg) {
 function handleFile(file) {
   const isImg = /^image\/(jpeg|png|webp)$/.test(file.type);
   const isVid = /^video\/(mp4|webm|quicktime)$/.test(file.type);
-  if (!isImg && !isVid) { showToast('Please upload a JPG, PNG, WebP, MP4, MOV, or WebM file.', 'err'); return; }
+  if (!isImg && !isVid) { showToast('JPG, PNG, WebP, MP4, MOV, WebM 파일만 업로드할 수 있어요.', 'err'); return; }
   setState('processing');
-  setProgress(0, 'Loading media…');
+  setProgress(0, '미디어 불러오는 중…');
   isImg ? processImage(file) : (videoWarn.classList.remove('hidden'), processVideo(file));
 }
 
@@ -685,17 +685,17 @@ const makeThumb = canvas => new Promise(res => {
 /* ── Image ── */
 function processImage(file) {
   const img = new Image(), url = URL.createObjectURL(file);
-  img.onerror = () => { showToast('Could not load image.', 'err'); resetApp(); };
+  img.onerror = () => { showToast('이미지를 불러올 수 없어요.', 'err'); resetApp(); };
   img.onload = async () => {
-    setProgress(30, 'Rendering hologram layout…');
+    setProgress(30, '홀로그램 레이아웃 렌더링 중…');
     const S = getS(), canvas = Object.assign(document.createElement('canvas'), { width: S, height: S });
     drawHologram(canvas.getContext('2d'), img, S, img.naturalWidth, img.naturalHeight);
-    setProgress(70, 'Generating thumbnail…');
+    setProgress(70, '썸네일 생성 중…');
     const thumb = await makeThumb(canvas);
-    setProgress(82, 'Exporting PNG…');
+    setProgress(82, 'PNG로 내보내는 중…');
     canvas.toBlob(async blob => {
       URL.revokeObjectURL(url);
-      setProgress(100, 'Done!');
+      setProgress(100, '완료!');
       await saveToLibrary(blob, thumb, 'image', S, 'png');
       setTimeout(() => showResult(blob, 'image', S, 'png'), 350);
     }, 'image/png');
@@ -718,15 +718,15 @@ function seekTo(video, t) {
 async function processVideo(file) {
   let url;
   try {
-    setProgress(5, 'Decoding video…');
+    setProgress(5, '영상 디코딩 중…');
     const video = Object.assign(document.createElement('video'), { muted: true, playsInline: true });
     url = URL.createObjectURL(file);
     video.src = url;
 
     await new Promise((res, rej) => {
       video.addEventListener('loadedmetadata', res, { once: true });
-      video.addEventListener('error', () => rej(new Error('Could not load video — format may not be supported on this browser.')), { once: true });
-      setTimeout(() => rej(new Error('Video load timed out.')), 15000);
+      video.addEventListener('error', () => rej(new Error('영상을 불러올 수 없어요 — 이 브라우저에서 지원하지 않는 형식일 수 있어요.')), { once: true });
+      setTimeout(() => rej(new Error('영상 불러오기 시간이 초과됐어요.')), 15000);
     });
 
     const S = getS(), fps = getFps(), dur = video.duration;
@@ -754,25 +754,25 @@ async function processVideo(file) {
       blob = await recordMime(video, S, fps, dur, 'video/mp4');
     } else {
       const mime = pickWebm();
-      if (!mime) throw new Error('Your browser does not support video recording. Try Chrome or Edge.');
+      if (!mime) throw new Error('이 브라우저는 영상 녹화를 지원하지 않아요. Chrome이나 Edge를 사용해보세요.');
       blob = await recordMime(video, S, fps, dur, mime);
     }
 
     URL.revokeObjectURL(url);
-    setProgress(100, 'Done!');
+    setProgress(100, '완료!');
     const ext = blob.type.includes('mp4') ? 'mp4' : 'webm';
     await saveToLibrary(blob, thumb, 'video', S, ext);
     setTimeout(() => showResult(blob, 'video', S, ext), 350);
   } catch (err) {
     if (url) URL.revokeObjectURL(url);
     console.error('Video processing error:', err);
-    showToast(err.message || 'Video processing failed — try Chrome or a shorter clip.', 'err');
+    showToast(err.message || '영상 처리에 실패했어요 — Chrome을 사용하거나 더 짧은 영상으로 시도해보세요.', 'err');
     resetApp();
   }
 }
 
 async function encodeWebCodecs(video, S, fps, dur) {
-  setProgress(8, 'Loading MP4 muxer…');
+  setProgress(8, 'MP4 먹서 불러오는 중…');
   const { Muxer, ArrayBufferTarget } = await import('https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.js');
   const target = new ArrayBufferTarget();
   const muxer  = new Muxer({ target, video: { codec: 'avc', width: S, height: S }, fastStart: 'in-memory' });
@@ -794,14 +794,14 @@ async function encodeWebCodecs(video, S, fps, dur) {
       const frame = new VideoFrame(canvas, { timestamp: Math.round(fi * fd), duration: Math.round(fd) });
       enc.encode(frame, { keyFrame: fi % (fps * 2) === 0 });
       frame.close(); fi++;
-      setProgress(10 + (video.currentTime / dur) * 87, `Encoding ${mmss(video.currentTime)} / ${mmss(dur)}`);
+      setProgress(10 + (video.currentTime / dur) * 87, `인코딩 중 ${mmss(video.currentTime)} / ${mmss(dur)}`);
       if (!video.ended && !video.paused) requestAnimationFrame(tick); else res();
     };
     video.play();
     requestAnimationFrame(tick);
     video.addEventListener('ended', res, { once: true });
   });
-  setProgress(98, 'Finalising MP4…');
+  setProgress(98, 'MP4 마무리 중…');
   await enc.flush(); enc.close(); muxer.finalize();
   return new Blob([target.buffer], { type: 'video/mp4' });
 }
@@ -818,7 +818,7 @@ async function recordMime(video, S, fps, dur, mimeType) {
       if (video.currentTime !== lastT) {
         drawHologram(ctx, video, S, video.videoWidth, video.videoHeight);
         lastT = video.currentTime;
-        setProgress(10 + (video.currentTime / dur) * 87, `Recording ${mmss(video.currentTime)} / ${mmss(dur)}`);
+        setProgress(10 + (video.currentTime / dur) * 87, `녹화 중 ${mmss(video.currentTime)} / ${mmss(dur)}`);
       }
       requestAnimationFrame(tick);
     }
@@ -873,7 +873,7 @@ function showResult(blob, type, S, ext) {
   const filename = `hologram_${Date.now()}.${ext}`;
   previewWrap.innerHTML = '';
   if (type === 'image') {
-    const img = Object.assign(document.createElement('img'), { src: blobUrl, className: 'result-preview', alt: 'Hologram preview' });
+    const img = Object.assign(document.createElement('img'), { src: blobUrl, className: 'result-preview', alt: '홀로그램 미리보기' });
     previewWrap.appendChild(img);
   } else {
     const vid = Object.assign(document.createElement('video'), {
@@ -895,7 +895,7 @@ function resetApp() {
   previewWrap.innerHTML = '';
   fileInput.value = '';
   videoWarn.classList.add('hidden');
-  setProgress(0, 'Loading media…');
+  setProgress(0, '미디어 불러오는 중…');
   setState('upload');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
